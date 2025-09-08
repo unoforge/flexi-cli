@@ -1,0 +1,111 @@
+<?php
+
+namespace App\Flexiwind;
+
+class UiHelper
+{
+    protected static array $variants = [
+        'none' => [],
+        'solid' => [
+            'base' => 'ui-solid',
+            'intent' => [
+                'primary' => 'ui-solid-primary',
+                'secondary' => 'ui-solid-secondary',
+                'success' => 'ui-solid-success',
+                'danger' => 'ui-solid-danger',
+                'warning' => 'ui-solid-warning',
+                'info' => 'ui-solid-info',
+                'gray' => 'ui-solid-gray',
+                'neutral'=>'ui-solid-neutral'
+            ],
+        ],
+        'soft' => [
+            'base' => 'ui-soft',
+            'intent' => [
+                'primary' => 'ui-soft-primary',
+                'secondary' => 'ui-soft-secondary',
+                'accent'=>'ui-soft-accent',
+                'success' => 'ui-soft-success',
+                'danger' => 'ui-soft-danger',
+                'warning' => 'ui-soft-warning',
+                'info' => 'ui-soft-info',
+                'gray' => 'ui-soft-gray',
+                'neutral' => 'ui-soft-neutral'
+            ],
+        ],
+        'subtle' => [
+            'base' => 'ui-subtle',
+            'intent' => [
+                'primary' => 'ui-subtle-primary',
+                'secondary' => 'ui-subtle-secondary',
+                'success' => 'ui-subtle-success',
+                'danger' => 'ui-subtle-danger',
+                'accent'=>'ui-subtle-accent',
+                'warning' => 'ui-subtle-warning',
+                'info' => 'ui-subtle-info',
+                'gray' => 'ui-subtle-gray',
+                'neutral' => 'ui-subtle-neutral'
+            ],
+        ],
+        'outline' => [
+            'base' => 'ui-outline',
+            'intent' => [
+                'primary' => 'ui-outline-primary',
+                'secondary' => 'ui-outline-secondary',
+                'success' => 'ui-outline-success',
+                'danger' => 'ui-outline-danger',
+                'warning' => 'ui-outline-warning',
+                'info' => 'ui-outline-info',
+                'gray' => 'ui-outline-gray',
+                'neutral' => 'ui-outline-neutral'
+            ],
+        ],
+    ];
+
+    protected static array $all_radius = [
+        'none' => '',
+        'xs' => 'rounded-xs',
+        'sm' => 'rounded-sm',
+        'md' => 'rounded-md',
+        'lg' => 'rounded-lg',
+        'xl' => 'rounded-xl',
+        '2xl' => 'rounded-2xl',
+        '3xl' => 'rounded-3xl',
+        'circle' => 'rounded-full'
+    ];
+
+    protected static array $all_card_radius = [
+        'none'  => '[--card-radius:var(--ui-radius,0px)]',
+        'xs'    => '[--card-radius:var(--ui-radius,var(--radius-xs))]',
+        'sm'    => '[--card-radius:var(--ui-radius,var(--radius-sm))]',
+        'md'    => '[--card-radius:var(--ui-radius,var(--radius-md))]',
+        'lg'    => '[--card-radius:var(--ui-radius,var(--radius-lg))]',
+        'xl'    => '[--card-radius:var(--ui-radius,var(--radius-xl))]',
+        '2xl'   => '[--card-radius:var(--ui-radius,var(--radius-2xl))]',
+        '3xl'   => '[--card-radius:var(--ui-radius,var(--radius-3xl))]',
+        'circle' => '[--card-radius:var(--ui-radius,var(--radius-circle))]',
+    ];
+
+    public static function getVariants()
+    {
+        return self::$variants;
+    }
+
+    public static function getCardRadius(string $radius = 'md')
+    {
+        return self::$all_card_radius[$radius] ?? self::$all_card_radius['md'];
+    }
+
+    public static function getRadius(string $radius = 'md')
+    {
+        return self::$all_radius[$radius] ?? self::$all_radius['md'];
+    }
+
+    public static function getClasses(string $variant = 'solid', ?string $intent = 'gray'): string
+    {
+        $variantConfig = self::$variants[$variant] ?? [];
+        $base = $variantConfig['base'] ?? '';
+        $intentClass = $variantConfig['intent'][$intent] ?? '';
+        return trim("$base $intentClass");
+    }
+}

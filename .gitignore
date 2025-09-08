@@ -1,0 +1,7 @@
+# Ignore Composer's lock file
+/composer.lock
+
+# Ignore vendor directory
+/vendor/
+
+.DS_Store

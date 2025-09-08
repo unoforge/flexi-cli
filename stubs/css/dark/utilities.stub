@@ -1,0 +1,72 @@
+@utility ui-solid-gray {
+    --ui-solid-bg: var(--color-gray-900);
+    --ui-solid-text: var(--color-gray-300);
+}
+@utility ui-solid-success {
+    --ui-solid-text: var(--color-white);
+    --ui-solid-bg: var(--color-success-500);
+}
+
+@utility ui-solid-warning {
+    --ui-solid-text: var(--color-white);
+    --ui-solid-bg: var(--color-warning-500);
+
+}
+
+@utility ui-solid-danger {
+    --ui-solid-text: var(--color-white);
+    --ui-solid-bg: var(--color-danger-500);
+}
+
+@utility ui-solid-neutral {
+`   --ui-solid-bg: var(--color-white);
+    --ui-solid-text: var(--color-gray-900);`
+}
+
+@utility ui-outline-success {
+    --ui-outline-border: var(--color-secondary-500);
+    --ui-outline-text: var(--color-secondary-500);
+}
+
+@utility ui-outline-warning {
+    --ui-outline-border: var(--color-warning-500);
+    --ui-outline-text: var(--color-warning-500);
+}
+
+@utility ui-outline-danger {
+    --ui-outline-border: var(--color-danger-500);
+    --ui-outline-text: var(--color-danger-500);
+}
+
+@utility ui-soft-success {
+        --ui-soft-bg: --alpha(var(--color-success-900) / 30%);
+        --ui-soft-text: var(--color-success-300);
+}
+
+@utility ui-soft-warning {
+    --ui-soft-bg: --alpha(var(--color-warning-900) / 30%);
+    --ui-soft-text: var(--color-warning-300);
+}
+
+@utility ui-soft-danger {
+    --ui-soft-bg: --alpha(var(--color-danger-900) / 30%);
+    --ui-soft-text: var(--color-danger-300);
+}
+
+@utility ui-subtle-success {
+    --ui-subtle-bg: --alpha(var(--color-success-900) / 30%);
+    --ui-subtle-text: var(--color-success-300);
+    --ui-subtle-border: --alpha(var(--color-success-900) / 60%);
+}
+
+@utility ui-subtle-warning {
+    --ui-subtle-bg: --alpha(var(--color-warning-900) / 30%);
+    --ui-subtle-text: var(--color-warning-300);
+    --ui-subtle-border: --alpha(var(--color-warning-900) / 60%);
+}
+
+@utility ui-subtle-danger {
+    --ui-subtle-bg: --alpha(var(--color-danger-900) / 30%);
+    --ui-subtle-text: var(--color-danger-300);
+    --ui-subtle-border: --alpha(var(--color-danger-900) / 60%);
+}

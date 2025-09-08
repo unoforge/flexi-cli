@@ -1,0 +1,25 @@
+{
+    "name": "flexiwind/cli",
+    "version": "0.0.0",
+    "type": "cli",
+    "require": {
+        "symfony/console": "^7.3",
+        "symfony/yaml": "^7.3",
+        "symfony/http-client": "^7.3",
+        "laravel/prompts": "^0.3.6",
+        "symfony/process": "^7.3"
+    },
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Flexiwind\\": "src/"
+        }
+    },
+     "bin": ["bin/flexiwind"],
+    "authors": [
+        {
+            "name": "Johnkat Mj",
+            "email": "johnkatembue4@gmail.com"
+        }
+    ]
+}
