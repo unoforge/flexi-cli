@@ -22,12 +22,16 @@ class ConfigWriter
             $yaml .= "stimulus: {$answers['stimilus']}\n";
         }
 
-
         $yaml .= "theme: {$answers['theme']}\n";
         $yaml .= "themeMode: {$answers['themingMode']}\n";
         $yaml .= "cssFramework: {$answers['cssFramework']}\n";
         $yaml .= "js_folder: {$answers['js']}\n";
         $yaml .= "css_folder: {$answers['css']}\n";
+        
+        // Add default registry configuration
+        $yaml .= "defaultSource: https://flexiwind.org/registries/{name}.json\n";
+        $yaml .= "registries:\n";
+        $yaml .= "  '@flexiwind': https://flexiwind.org/registries/{name}.json\n";
 
         file_put_contents('flexiwind.yaml', $yaml);
     }

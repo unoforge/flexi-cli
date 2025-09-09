@@ -62,27 +62,17 @@ class RegistryBuilder
 
             if (isset($component['dependencies'])) {
                 if (!is_array($component['dependencies'])) {
-                    warning("⚠️ `dependencies` must be an object (name => version) for component `{$component['name']}`.");
+                    warning("⚠️ `dependencies` must be an object for component `{$component['name']}`.");
                 } else {
-                    foreach ($component['dependencies'] as $dep => $version) {
-                        if (!is_string($dep) || !is_string($version)) {
-                            warning("⚠️ Invalid dependency format in `dependencies` for component `{$component['name']}`.");
-                        }
-                    }
-                    $registry['dependencies'] = $this->normalizeDependencies($component['dependencies'], $component['name'], 'dependencies');
+                    $registry['dependencies'] = $this->normalizeDependencyStructure($component['dependencies'], $component['name'], 'dependencies');
                 }
             }
 
             if (isset($component['devDependencies'])) {
                 if (!is_array($component['devDependencies'])) {
-                    warning("⚠️ `devDependencies` must be an object (name => version) for component `{$component['name']}`.");
+                    warning("⚠️ `devDependencies` must be an object for component `{$component['name']}`.");
                 } else {
-                    foreach ($component['devDependencies'] as $dep => $version) {
-                        if (!is_string($dep) || !is_string($version)) {
-                            warning("⚠️ Invalid dependency format in `devDependencies` for component `{$component['name']}`.");
-                        }
-                    }
-                    $registry['devDependencies'] = $this->normalizeDependencies($component['devDependencies'], $component['name'], 'devDependencies');
+                    $registry['devDependencies'] = $this->normalizeDependencyStructure($component['devDependencies'], $component['name'], 'devDependencies');
                 }
             }
 
@@ -116,26 +106,67 @@ class RegistryBuilder
         }
     }
 
-    private function normalizeDependencies(mixed $deps, string $componentName, string $section): array
+    private function normalizeDependencyStructure(mixed $deps, string $componentName, string $section): array
     {
-        $normalized = [];
+        $normalized = [
+            'composer' => [],
+            'node' => []
+        ];
 
         if (is_array($deps)) {
-            foreach ($deps as $key => $value) {
-                if (is_string($key)) {
-                    // Cas objet: { "dep": "version" }
-                    $normalized[] = "{$key}@{$value}";
-                } elseif (is_string($value)) {
-                    // Cas array déjà formaté: ["dep@version"]
-                    $normalized[] = $value;
-                } else {
-                    warning("⚠️ Invalid dependency format in `$section` for component `{$componentName}`.");
+            // Check if it's already in the new format
+            if (isset($deps['composer']) || isset($deps['node'])) {
+                // New format: { "composer": [...], "node": [...] }
+                if (isset($deps['composer']) && is_array($deps['composer'])) {
+                    $normalized['composer'] = $deps['composer'];
+                }
+                if (isset($deps['node']) && is_array($deps['node'])) {
+                    $normalized['node'] = $deps['node'];
+                }
+            } else {
+                // Legacy format - try to auto-detect package types
+                foreach ($deps as $key => $value) {
+                    if (is_string($key)) {
+                        // Object format: { "package": "version" }
+                        $packageWithVersion = "{$key}@{$value}";
+                        if ($this->isComposerPackage($key)) {
+                            $normalized['composer'][] = $packageWithVersion;
+                        } else {
+                            $normalized['node'][] = $packageWithVersion;
+                        }
+                    } elseif (is_string($value)) {
+                        // Array format: ["package@version"]
+                        $packageName = explode('@', $value)[0];
+                        if ($this->isComposerPackage($packageName)) {
+                            $normalized['composer'][] = $value;
+                        } else {
+                            $normalized['node'][] = $value;
+                        }
+                    }
                 }
             }
         } else {
-            warning("⚠️ `$section` must be an array or object for component `{$componentName}`.");
+            warning("⚠️ `$section` must be an object for component `{$componentName}`.");
         }
 
         return $normalized;
+    }
+
+    private function isComposerPackage(string $packageName): bool
+    {
+        // PHP packages typically follow vendor/package format
+        if (preg_match('/^[a-zA-Z0-9_-]+\/[a-zA-Z0-9_-]+$/', $packageName)) {
+            return true;
+        }
+        
+        // Check for common PHP-specific packages
+        $phpPrefixes = ['ext-', 'php', 'lib-'];
+        foreach ($phpPrefixes as $prefix) {
+            if (str_starts_with($packageName, $prefix)) {
+                return true;
+            }
+        }
+        
+        return false;
     }
 }
