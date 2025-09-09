@@ -28,7 +28,6 @@ class InitCommand extends Command
         $this
             ->setName('init')
             ->setDescription('Initialize Flexiwind in your project')
-            ->addOption('path', 'p', InputOption::VALUE_OPTIONAL, 'Target directory', getcwd())
             ->addOption('new-laravel', 'nl', InputOption::VALUE_NONE, 'Create a new Laravel project')
             ->addOption('new-symfony', 'ns', InputOption::VALUE_NONE, 'Create a new Symfony project')
             ->addOption('tailwind', null, InputOption::VALUE_NONE, 'Use tailwindcss')

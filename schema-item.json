@@ -1,0 +1,203 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "https://flexiwind.com/schema/registry-item.json",
+    "title": "Flexiwind Registry Item Schema",
+    "description": "Schema for Flexiwind registry component items",
+    "type": "object",
+    "required": [
+        "name",
+        "type",
+        "files"
+    ],
+    "properties": {
+        "$schema": {
+            "type": "string",
+            "description": "Reference to this schema file",
+            "default": "flexiwindsource/schema-item.json"
+        },
+        "version": {
+            "type": "string",
+            "description": "Version of the component",
+            "pattern": "^\\d+\\.\\d+\\.\\d+(-[a-zA-Z0-9-]+)?$",
+            "default": "0.0.1"
+        },
+        "name": {
+            "type": "string",
+            "description": "Unique identifier for the component",
+            "pattern": "^[a-z0-9-]+$",
+            "minLength": 1,
+            "maxLength": 100
+        },
+        "type": {
+            "type": "string",
+            "description": "Type of registry item",
+            "enum": [
+                "registry:block",
+                "registry:script",
+                "registry:component",
+                "registry:ui",
+                "registry:lib",
+                "registry:example",
+                "registry:style",
+                "registry:config"
+            ],
+            "default": "registry:component"
+        },
+        "title": {
+            "type": "string",
+            "description": "Human-readable title for the component",
+            "minLength": 1,
+            "maxLength": 200
+        },
+        "description": {
+            "type": "string",
+            "description": "Brief description of the component",
+            "maxLength": 500
+        },
+        "registryDependencies": {
+            "type": "array",
+            "description": "List of other registry components this component depends on",
+            "items": {
+                "type": "string",
+                "oneOf": [
+                    {
+                        "pattern": "^[a-z0-9-]+$",
+                        "description": "Local registry component name"
+                    },
+                    {
+                        "pattern": "^@[a-z0-9-]+/[a-z0-9-]+$",
+                        "description": "Scoped registry component"
+                    },
+                    {
+                        "pattern": "^https?://",
+                        "description": "External registry URL"
+                    }
+                ]
+            },
+            "uniqueItems": true,
+            "default": []
+        },
+        "dependencies": {
+            "type": "array",
+            "description": "List of npm/composer dependencies required by this component",
+            "items": {
+                "type": "string",
+                "pattern": "^[a-zA-Z0-9@/_-]+(@[^@]+)?$",
+                "description": "Package name with optional version (e.g., 'package@1.0.0')"
+            },
+            "uniqueItems": true,
+            "default": []
+        },
+        "devDependencies": {
+            "type": "array",
+            "description": "List of development dependencies required by this component",
+            "items": {
+                "type": "string",
+                "pattern": "^[a-zA-Z0-9@/_-]+(@[^@]+)?$",
+                "description": "Package name with optional version (e.g., 'package@1.0.0')"
+            },
+            "uniqueItems": true,
+            "default": []
+        },
+        "files": {
+            "type": "array",
+            "description": "List of files that make up this component",
+            "minItems": 1,
+            "items": {
+                "type": "object",
+                "required": [
+                    "path",
+                    "type"
+                ],
+                "properties": {
+                    "path": {
+                        "type": "string",
+                        "description": "Source path of the file",
+                        "minLength": 1
+                    },
+                    "type": {
+                        "type": "string",
+                        "description": "Type of file",
+                        "enum": [
+                            "registry:block",
+                            "registry:script",
+                            "registry:component",
+                            "registry:ui",
+                            "registry:lib",
+                            "registry:example",
+                            "registry:style",
+                            "registry:config"
+                        ]
+                    },
+                    "target": {
+                        "type": "string",
+                        "description": "Target path where the file should be placed in the user's project",
+                        "minLength": 1
+                    },
+                    "content": {
+                        "type": "string",
+                        "description": "Content of the file"
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "patch": {
+            "type": "object",
+            "description": "File modifications to apply after installation",
+            "patternProperties": {
+                "^.+$": {
+                    "type": "array",
+                    "description": "List of modifications for a specific file",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "action": {
+                                "type": "string",
+                                "enum": [
+                                    "append",
+                                    "prepend",
+                                    "replace",
+                                    "insert"
+                                ],
+                                "description": "Type of modification to perform"
+                            },
+                            "content": {
+                                "type": "string",
+                                "description": "Content to add or replace"
+                            },
+                            "target": {
+                                "type": "string",
+                                "description": "Target pattern for replacement or insertion point"
+                            },
+                            "line": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "description": "Line number for insertion (1-based)"
+                            }
+                        },
+                        "required": [
+                            "action",
+                            "content"
+                        ],
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "meta": {
+            "type": "object",
+            "description": "Additional metadata for the component",
+            "properties": {
+                "license": {
+                    "type": "string",
+                    "description": "License for the component",
+                    "default": "MIT"
+                }
+            },
+            "additionalProperties": false
+        }
+    },
+    "additionalProperties": false
+}

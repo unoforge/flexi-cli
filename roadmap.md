@@ -1,7 +1,7 @@
 
 ## Detailed Roadmap
 
-### 🎯 Foundation
+### Foundation
 **Status: 🚧 In Development**
 
 #### ✅ Completed
@@ -15,6 +15,7 @@
 - [x] Base file generation system
 - [x] Stub template system
 - [x] Basic installer architecture
+- [x] Registry builder command (`build`)
 
 #### 🚧 In Progress
 - [ ] Complete dependency installation automation
@@ -22,7 +23,6 @@
 - [ ] UnoCSS configuration setup
 - [ ] Component addition command (`add`)
 - [ ] Registry JSON schema definition
-- [ ] Registry builder command (`build`)
 - [ ] Component registry integration
 - [ ] Laravel layout generation and editing
 - [ ] Error handling improvements
