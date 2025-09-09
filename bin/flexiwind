@@ -3,6 +3,8 @@
 
 require __DIR__ . '/../vendor/autoload.php';
 
+use Flexiwind\Command\BuildCommand;
+use Flexiwind\Command\ValidateCommand;
 use Symfony\Component\Console\Application;
 use Flexiwind\Command\InitCommand;
 
@@ -10,5 +12,7 @@ $application = new Application('Flexiwind CLI', '0.1.0');
 
 // Register commands
 $application->add(new InitCommand());
+$application->add(new BuildCommand());
+$application->add(new ValidateCommand());
 
 $application->run();
