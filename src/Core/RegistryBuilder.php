@@ -26,10 +26,10 @@ class RegistryBuilder
             note("Building component: " . $component['name']);
 
             $registry = [
-                '$schema'     => 'https://raw.githubusercontent.com/unoforge/cli/main/registry-item.json',
-                'version'     => $component['version'] ?? '0.0.1',
+                '$schema'     => Constants::SCHEMA_REFERENCE,
+                'version'     => $component['version'] ?? Constants::DEFAULT_COMPONENT_VERSION,
                 'name'        => $component['name'],
-                'type'        => $component['type'] ?? 'registry:component',
+                'type'        => $component['type'] ?? Constants::DEFAULT_COMPONENT_TYPE,
                 'title'       => $component['title'] ?? '',
                 'description' => $component['description'] ?? '',
             ];

@@ -2,7 +2,7 @@
 
 namespace Flexiwind\Command;
 
-use Flexiwind\Core\RegistryBuilder;
+use Flexiwind\Core\{RegistryBuilder, Constants};
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -23,7 +23,7 @@ class BuildCommand extends Command
                 'o',
                 InputOption::VALUE_OPTIONAL,
                 'Output directory name (relative to current directory)',
-                'public/r'
+                Constants::DEFAULT_BUILD_OUTPUT
             );
     }
 
