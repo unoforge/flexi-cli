@@ -60,7 +60,7 @@ class SchemaValidator
             return;
         }
 
-        error("❌ Registry item validation failed:");
+        error("✘ Registry item validation failed:");
         foreach ($this->errors as $error) {
             warning("  • $error");
         }

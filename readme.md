@@ -99,13 +99,12 @@ flexiwind add @ui/card
 - **Config File Editing**: Vite and framework configuration updates
 - **Layout Generation**: Framework-specific layout creation and editing
 - **Stub System**: Template files for different frameworks and setups
+- **Component Registry**: Download and install components from remote sources
 
 ### 📋 Planned Features
 
-- **Component Registry**: Download and install components from remote sources
 - **Starter Templates**: Pre-configured project templates
 - **Component Library**: Expanded built-in component collection
-- **Theme System**: Multiple theme support and customization
 
 
 ## Project Structure
@@ -137,13 +136,17 @@ Flexiwind uses a `flexiwind.yaml` configuration file in your project root:
 
 ```yaml
 framework: laravel
-css_framework: tailwindcss
-paths:
-  css: resources/css
-  js: resources/js
-sources:
-  - name: "@flexiwind"
-    url: "https://registry.flexiwind.com/components/{name}.json"
+livewire: true
+alpine: false
+theme: flexiwind
+themeMode: Both
+cssFramework: tailwindcss
+js_folder: resources/js
+css_folder: resources/css
+defaultSource: http://localhost:4500/public/r/{name}.json
+registries:
+  '@flexiwind': http://localhost:4500/public/r/{name}.json
+
 ```
 
 ## Contributing
