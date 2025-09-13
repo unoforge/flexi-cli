@@ -5,15 +5,18 @@ namespace Flexiwind\Command;
 
 use Flexiwind\Service\{ProjectCreator, ProjectInitializer, ThemingInitializer, ProjectDetector};
 use Flexiwind\Libs\FlexiwindInitializer;
+use Flexiwind\Core\Constants;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use function Laravel\Prompts\{note, info};
+use Symfony\Component\Yaml\Yaml;
+use function Laravel\Prompts\{ info};
 
 class InitCommand extends Command
 {
+    private ?OutputInterface $output = null;
 
     public function __construct(
         private ProjectCreator $projectCreator = new ProjectCreator(),
@@ -40,9 +43,15 @@ class InitCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        $this->output = $output;
         $isFlexiwind = true;
-        
-        $output->writeln($this->displayName());
+
+        $this->displayName();
+
+        if($this->checkIsInitialized()){
+            $output->writeln('<fg=yellow>⚠️  Flexiwind has already been initialized in this project. No further action is needed.</>');
+            return Command::SUCCESS;
+        }
 
         if ($input->getOption('no-flexiwind')) {
             $isFlexiwind = false;
@@ -90,7 +99,39 @@ class InitCommand extends Command
         return Command::SUCCESS;
     }
 
-    private function displayName(): string
+    private function checkIsInitialized(): bool
+    {
+        $configFile = getcwd() . '/' . Constants::CONFIG_FILE;
+        
+        if (!file_exists($configFile)) {
+            return false;
+        }
+        
+        try {
+            $config = Yaml::parseFile($configFile);
+            $requiredKeys = ['framework', 'defaultSource', 'registries'];
+            foreach ($requiredKeys as $key) {
+                if (!isset($config[$key])) {
+                    return false;
+                }
+            }
+            
+
+            if (!is_array($config['registries'])) {
+                return false;
+            }
+            if (empty($config['registries'])) {
+                return false;
+            }
+            
+            return true;
+            
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+
+    private function displayName(): void
     {
         $output = <<<'ASCII'
 <fg=red>
@@ -103,7 +144,7 @@ class InitCommand extends Command
   Modern PHP Web Application Scaffolding Tool
 </>
 ASCII;
-        
-        return $output;
+
+        $this->output->writeln($output);
     }
 }
