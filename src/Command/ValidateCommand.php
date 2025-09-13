@@ -2,7 +2,7 @@
 
 namespace Flexiwind\Command;
 
-use Flexiwind\Core\SchemaValidator;
+use Flexiwind\Core\{SchemaValidator, Constants};
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputArgument;
@@ -36,7 +36,7 @@ class ValidateCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $filePath = $input->getArgument('file') ?? 'registry.json';
-        $schemaPath = "https://raw.githubusercontent.com/unoforge/cli/main/registry-item.json";
+        $schemaPath = Constants::SCHEMA_URL;
         $itemName = $input->getOption('item');
 
         if (!file_exists($filePath)) {
@@ -91,7 +91,7 @@ class ValidateCommand extends Command
         }
 
         if ($hasErrors) {
-            error("❌ Validation completed with errors");
+            $output->writeln("<fg=red>✘ Validation completed with errors</>");
             return Command::FAILURE;
         }
 
@@ -121,7 +121,7 @@ class ValidateCommand extends Command
         $isValid = $validator->validate($item);
         
         if (!$isValid) {
-            error("❌ Validation failed for: $name");
+            error("✘ Validation failed for: $name");
             $errors = $validator->getErrors();
             foreach ($errors as $error) {
                 error("  • $error");
