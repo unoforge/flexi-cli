@@ -87,7 +87,7 @@ class NodePackageInstaller
         return $process->isSuccessful();
     }
 
-    private function buildInstallCommand(string $packageName, bool $isDevDep): string
+    public function buildInstallCommand(string $packageName, bool $isDevDep): string
     {
         return match ($this->packageManager) {
             'npm'  => "npm install " . $packageName . ($isDevDep ? " -D" : ""),

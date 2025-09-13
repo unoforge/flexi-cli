@@ -4,25 +4,28 @@ namespace Flexiwind\Service;
 
 use Flexiwind\Service\ProjectDetector;
 use Symfony\Component\Console\Input\InputInterface;
-use function Laravel\Prompts\{warning, select};
+use Symfony\Component\Console\Output\OutputInterface;
+
+use function Laravel\Prompts\{select};
 
 class ProjectInitializer
 {
-    public function initialize(InputInterface $input): array
+    public function initialize(InputInterface $input,OutputInterface $output): array
     {
         $projectAnswers = [];
         $initProjectFromCli = false;
 
+
         if ($input->getOption('new-laravel')) {
-            $projectAnswers = (new ProjectCreator())->createLaravel();
+            $projectAnswers = (new ProjectCreator())->createLaravel($output);
             $initProjectFromCli = true;
         } elseif ($input->getOption('new-symfony')) {
-            $projectAnswers = (new ProjectCreator())->createSymfony();
+            $projectAnswers = (new ProjectCreator())->createSymfony($output);
             $initProjectFromCli = true;
         }
 
         if (!ProjectDetector::check_Composer(getcwd())) {
-            warning('❌ No composer.json found.');
+            $output->writeln('<fg=red>✘ No composer.json found.</>');
 
             $framework = select(
                 label: 'What framework are you using?',
@@ -30,9 +33,9 @@ class ProjectInitializer
                 default: 'laravel',
             );
             $projectAnswers = match ($framework) {
-                'laravel' => (new ProjectCreator())->createLaravel(),
-                'symfony' => (new ProjectCreator())->createSymfony(),
-                default   => (new ProjectCreator())->createLaravel(),
+                'laravel' => (new ProjectCreator())->createLaravel($output),
+                'symfony' => (new ProjectCreator())->createSymfony($output),
+                default   => (new ProjectCreator())->createLaravel($output),
             };
 
 
@@ -57,7 +60,6 @@ class ProjectInitializer
     private function handleExistingLaravel(): array
     {
         $projectCreator = new ProjectCreator();
-
         // Ask about Livewire
         $livewire = $projectCreator->askLivewire();
         $volt = false;

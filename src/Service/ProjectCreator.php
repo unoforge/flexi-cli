@@ -2,14 +2,17 @@
 
 namespace Flexiwind\Service;
 
-use function Laravel\Prompts\{note, text, spin, confirm, select, warning};
+use Flexiwind\Installer\PackageInstaller;
+use Symfony\Component\Console\Output\OutputInterface;
+
+use function Laravel\Prompts\{text, spin, confirm, select, warning};
 
 // TODO: Improve this later
 class ProjectCreator
 {
-    public function createLaravel(): array
+    public function createLaravel(OutputInterface $output): array
     {
-        $app = $this->runComposerInit('Laravel', true);
+        $app = $this->runComposerInit('Laravel', $output, true);
         $projectPath = $app['projectPath'];
         $fromStarter = $app['fromStarter'];
         $livewire = $alpine = $volt = false;
@@ -22,20 +25,20 @@ class ProjectCreator
         return compact('livewire', 'alpine', 'volt', 'projectPath', 'fromStarter');
     }
 
-    public function createSymfony(): array
+    public function createSymfony(OutputInterface $output): array
     {
-        $app = $this->runComposerInit('Symfony');
+        $app = $this->runComposerInit('Symfony', $output);
         $fromStarter = $app['fromStarter'];
         $projectPath = $app['projectPath'];
-        
+
         $stimilus = !$fromStarter ? $this->askStimulus() : false;;
         return compact('stimilus', 'projectPath', 'fromStarter');
     }
 
-    private function runComposerInit(string $label, bool $isLaravel = false)
+    private function runComposerInit(string $label, $output, bool $isLaravel = false)
     {
 
-        note("🚀 Creating a new $label project...");
+        $output->writeln("<fg=red>======= Setup a new $label project. =======</>");
         $name = text(
             label: 'What is the name of your project?',
             default: 'my-app'
@@ -52,11 +55,12 @@ class ProjectCreator
                 mkdir($name);
             }
         } else {
-            $createCommand = $isLaravel ? "laravel new $name -n" : "composer create-project symfony/skeleton $name";
+            $createCommand = $isLaravel ? "laravel new $name --no-interaction" : "composer create-project symfony/skeleton $name";
             spin(
-                callback: fn() => exec($createCommand),
+                callback: fn() => exec($createCommand, $output, $returnCode),
                 message: "Creating a new empty $label project"
             );
+            $output->writeln("<bg=green;fg=white> CREATED </> <fg=green>{$label} project created</>");
         }
 
         // Check if directory was created successfully before changing to it
@@ -73,11 +77,18 @@ class ProjectCreator
 
     public function askLivewire()
     {
+        if (PackageInstaller::composer()->isInstalled('livewire/livewire')) {
+            return true;
+        }
+
         return confirm('Do you want to install livewire?');
     }
     public function askLivewireVolt()
     {
-        return confirm('Do you want to use Volt?');
+        if (PackageInstaller::composer()->isInstalled('livewire/volt')) {
+            return true;
+        }
+        return confirm('Do you want to use Livewire Volt?');
     }
     public function askAlpine()
     {
