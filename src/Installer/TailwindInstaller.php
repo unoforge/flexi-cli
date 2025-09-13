@@ -11,11 +11,9 @@ class TailwindInstaller implements InstallerInterface
     public function install(string $packageManager, string $dir, array $options = []): void
     {
         if (!PackageInstaller::node($packageManager, $dir)->isInstalled('tailwindcss')) {
-            note('TailwindCSS not found. Installing...');
             PackageInstaller::node($packageManager, $dir)->install('tailwindcss @tailwindcss/vite');
             ConfigWriter::updateTailwindViteConfig();
         } elseif (!PackageInstaller::node($packageManager, $dir)->isInstalled('@tailwindcss/vite')) {
-            note('Tailwind Vite Plugin not found. Installing...');
             PackageInstaller::node($packageManager, $dir)->install('@tailwindcss/vite');
             ConfigWriter::updateTailwindViteConfig();
         } else {

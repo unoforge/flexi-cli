@@ -12,12 +12,9 @@ class UnoCSSInstaller implements InstallerInterface
     {
         if (!PackageInstaller::node($packageManager)->isInstalled('unocss')) {
             if (PackageInstaller::node($packageManager)->isInstalled('tailwindcss')) {
-                note("Tailwindcss found, uninstalling");
                 PackageInstaller::node($packageManager)->remove('tailwindcss @tailwindcss/vite');
             }
-            note('UnoCSS not found. Installing...');
             PackageInstaller::node($packageManager)->install('unocss @unifydev/preset-ui @unifydev/flexilla', true);
-            note('UnoCSS installed. Updating vite.config');
             ConfigWriter::updateUnoViteConfig();
             ConfigWriter::updateUnoConfig();
         } else {

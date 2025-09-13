@@ -22,25 +22,21 @@ class ConfigWriter
             $yaml .= "stimulus: {$answers['stimilus']}\n";
         }
 
-
         $yaml .= "theme: {$answers['theme']}\n";
         $yaml .= "themeMode: {$answers['themingMode']}\n";
         $yaml .= "cssFramework: {$answers['cssFramework']}\n";
         $yaml .= "js_folder: {$answers['js']}\n";
         $yaml .= "css_folder: {$answers['css']}\n";
+        
+        // Add default registry configuration
+        $yaml .= "defaultSource: " . Constants::DEFAULT_REGISTRY . "\n";
+        $yaml .= "registries:\n";
+        $yaml .= "  '" . Constants::FLEXIWIND_NAMESPACE . "': " . Constants::DEFAULT_REGISTRY . "\n";
 
         file_put_contents('flexiwind.yaml', $yaml);
     }
 
-    public static function createKeysYaml(): void
-    {
-        if (!is_dir('.flexiwind')) {
-            mkdir('.flexiwind', 0755, true);
-        }
 
-        file_put_contents('.flexiwind/keys.yaml', "# Reserved for API keys\n");
-        FileEditor::appendIfNotExists(getcwd() . '/.gitignore', '.flexiwind/');
-    }
 
     public static function updateTailwindViteConfig(): void
     {

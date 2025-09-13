@@ -12,7 +12,6 @@
     --ui-solid-bg: var(--color-warning-500);
 
 }
-
 @utility ui-solid-danger {
     --ui-solid-text: var(--color-white);
     --ui-solid-bg: var(--color-danger-500);
