@@ -16,13 +16,13 @@ Flexiwind CLI is a command-line tool that streamlines the setup of modern web ap
 ### Global Installation (Recommended)
 
 ```bash
-coming soon
+composer global require unoforge/flexi-cli
 ```
 
 ### Local Installation
 
 ```bash
-coming soon
+composer require --dev unoforge/flexi-cli
 ```
 
 ## Quick Start
@@ -31,23 +31,23 @@ coming soon
 
 ```bash
 # Create a new Laravel project with TailwindCSS
-flexiwind init --new-laravel --tailwind
+flexi-cli init --new-laravel --tailwind
 
 # Create a new Symfony project with UnoCSS
-flexiwind init --new-symfony --uno
+flexi-cli init --new-symfony --uno
 
 # Initialize in existing project or empty project
-flexiwind init
+flexi-cli init
 ```
 
 ### Add Components
 
 ```bash
 # Add a button component from the default registry
-flexiwind add @flexiwind/button
+flexi-cli add @flexiwind/button
 
 # Add a modal component
-flexiwind add @flexiwind/modal
+flexi-cli add @flexiwind/modal
 ```
 
 ## Commands
@@ -67,7 +67,7 @@ Initialize Flexiwind in your project with interactive setup.
 
 **Examples:**
 ```bash
-flexiwind init --new-laravel
+flexi-cli init --new-laravel
 ```
 
 ### `add`
@@ -78,8 +78,8 @@ Add UI components to your project from component registries.
 
 **Examples:**
 ```bash
-flexiwind add @flexiwind/button
-flexiwind add @ui/card
+flexi-cli add @flexiwind/button
+flexi-cli add @ui/card
 ```
 
 ## Features
@@ -114,9 +114,9 @@ flexiwind add @ui/card
 ## Project Structure
 
 ```
-flexiwind-cli/
+flexi-cli/
 ├── bin/
-│   └── flexiwind              # Main CLI executable
+│   └── flexi-cli              # Main CLI executable
 ├── src/
 │   ├── Command/               # CLI commands
 │   │   ├── InitCommand.php    # Project initialization
