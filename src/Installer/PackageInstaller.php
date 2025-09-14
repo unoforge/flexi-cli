@@ -1,8 +1,8 @@
 <?php
 
-namespace Flexiwind\Installer;
-use Flexiwind\Installer\NodePackageInstaller;
-use Flexiwind\Installer\ComposerInstaller;
+namespace FlexiCli\Installer;
+use FlexiCli\Installer\NodePackageInstaller;
+use FlexiCli\Installer\ComposerInstaller;
 
 class PackageInstaller
 {

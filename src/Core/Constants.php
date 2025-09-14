@@ -1,6 +1,6 @@
 <?php
 
-namespace Flexiwind\Core;
+namespace FlexiCli\Core;
 
 /**
  * Application constants for Flexiwind CLI

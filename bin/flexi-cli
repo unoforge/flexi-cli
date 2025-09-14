@@ -3,14 +3,14 @@
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Flexiwind\Command\BuildCommand;
-use Flexiwind\Command\ValidateCommand;
-use Flexiwind\Command\AddCommand;
+use FlexiCli\Command\BuildCommand;
+use FlexiCli\Command\ValidateCommand;
+use FlexiCli\Command\AddCommand;
 use Symfony\Component\Console\Application;
-use Flexiwind\Command\InitCommand;
-use Flexiwind\Command\CleanFluxCommand;
+use FlexiCli\Command\InitCommand;
+use FlexiCli\Command\CleanFluxCommand;
 
-$application = new Application('Flexiwind CLI', '0.1.0');
+$application = new Application('Flexi-CLI', '0.0.0');
 
 // Register commands
 $application->add(new InitCommand());

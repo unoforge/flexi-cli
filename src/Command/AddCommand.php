@@ -1,11 +1,11 @@
 <?php
 
-namespace Flexiwind\Command;
+namespace FlexiCli\Command;
 
-use Flexiwind\Core\{Constants, RegistryStore};
-use Flexiwind\Utils\HttpUtils;
-use Flexiwind\Service\ProjectDetector;
-use Flexiwind\Installer\PackageInstaller;
+use FlexiCli\Core\{Constants, RegistryStore};
+use FlexiCli\Utils\HttpUtils;
+use FlexiCli\Service\ProjectDetector;
+use FlexiCli\Installer\PackageInstaller;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;

@@ -1,9 +1,9 @@
 <?php
 
-namespace Flexiwind\Command;
+namespace FlexiCli\Command;
 
-use Flexiwind\Installer\PackageInstaller;
-use Flexiwind\Utils\FileUtils;
+use FlexiCli\Installer\PackageInstaller;
+use FlexiCli\Utils\FileUtils;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;

@@ -1,9 +1,9 @@
 <?php
 
-namespace Flexiwind\Installer;
+namespace FlexiCli\Installer;
 
-use Flexiwind\Core\ConfigWriter;
-use Flexiwind\Installer\PackageInstaller;
+use FlexiCli\Core\ConfigWriter;
+use FlexiCli\Installer\PackageInstaller;
 use function Laravel\Prompts\note;
 
 class UnoCSSInstaller implements InstallerInterface

@@ -1,6 +1,6 @@
 <?php
 
-namespace Flexiwind\Utils;
+namespace FlexiCli\Utils;
 
 class FileUtils
 {

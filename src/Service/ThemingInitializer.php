@@ -1,8 +1,8 @@
 <?php
 
-namespace Flexiwind\Service;
+namespace FlexiCli\Service;
 
-use Flexiwind\Core\Constants;
+use FlexiCli\Core\Constants;
 use function Laravel\Prompts\{select};
 
 class ThemingInitializer

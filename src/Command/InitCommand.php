@@ -1,11 +1,11 @@
 <?php
 
-namespace Flexiwind\Command;
+namespace FlexiCli\Command;
 
 
-use Flexiwind\Service\{ProjectCreator, ProjectInitializer, ThemingInitializer, ProjectDetector};
-use Flexiwind\Libs\FlexiwindInitializer;
-use Flexiwind\Core\Constants;
+use FlexiCli\Service\{ProjectCreator, ProjectInitializer, ThemingInitializer, ProjectDetector};
+use FlexiCli\Libs\FlexiwindInitializer;
+use FlexiCli\Core\Constants;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -135,12 +135,12 @@ class InitCommand extends Command
     {
         $output = <<<'ASCII'
 <fg=red>
-  ███████╗██╗     ███████╗██╗  ██╗██╗██╗    ██╗██╗███╗   ██╗██████╗ 
-  ██╔════╝██║     ██╔════╝╚██╗██╔╝██║██║    ██║██║████╗  ██║██╔══██╗
-  █████╗  ██║     █████╗   ╚███╔╝ ██║██║ █╗ ██║██║██╔██╗ ██║██║  ██║
-  ██╔══╝  ██║     ██╔══╝   ██╔██╗ ██║██║███╗██║██║██║╚██╗██║██║  ██║
-  ██║     ███████╗███████╗██╔╝ ██╗██║╚███╔███╔╝██║██║ ╚████║██████╔╝
-  ╚═╝     ╚══════╝╚══════╝╚═╝  ╚═╝╚═╝ ╚══╝╚══╝ ╚═╝╚═╝  ╚═══╝╚═════╝ 
+  ███████╗██╗     ███████╗██╗  ██╗██╗      ██████╗██╗     ██╗
+  ██╔════╝██║     ██╔════╝╚██╗██╔╝██║     ██╔════╝██║     ██║
+  █████╗  ██║     █████╗   ╚███╔╝ ██║     ██║     ██║     ██║
+  ██╔══╝  ██║     ██╔══╝   ██╔██╗ ██║     ██║     ██║     ██║
+  ██║     ███████╗███████╗██╔╝ ██╗██║     ╚██████╗███████╗██║
+  ╚═╝     ╚══════╝╚══════╝╚═╝  ╚═╝╚═╝      ╚═════╝╚══════╝╚═╝
   Modern PHP Web Application Scaffolding Tool
 </>
 ASCII;

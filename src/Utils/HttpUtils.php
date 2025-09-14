@@ -1,8 +1,8 @@
 <?php
 
-namespace Flexiwind\Utils;
+namespace FlexiCli\Utils;
 
-use Flexiwind\Core\Constants;
+use FlexiCli\Core\Constants;
 use Symfony\Component\HttpClient\HttpClient;
 
 class HttpUtils

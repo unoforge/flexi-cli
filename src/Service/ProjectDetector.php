@@ -1,6 +1,6 @@
 <?php
 
-namespace Flexiwind\Service;
+namespace FlexiCli\Service;
 
 class ProjectDetector
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Flexiwind\Installer;
+namespace FlexiCli\Installer;
 
 interface InstallerInterface
 {
