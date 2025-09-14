@@ -1,8 +1,8 @@
 <?php
 
-namespace Flexiwind\Core;
+namespace FlexiCli\Core;
 
-use Flexiwind\Core\{StubStorage, Constants};
+use FlexiCli\Core\{StubStorage, Constants};
 
 class FileGenerator
 {

@@ -60,6 +60,10 @@ Initialize Flexiwind in your project with interactive setup.
 - `--new-symfony, -ns`: Create a new Symfony project
 - `--tailwind`: Use TailwindCSS
 - `--uno`: Use UnoCSS
+- `--css-path` : Path to the CSS files
+- `--js-path` : Path to the JS files
+- `--no-flexiwind` : Initialize without Flexiwind UI
+
 
 **Examples:**
 ```bash

@@ -1,10 +1,10 @@
 <?php
 
-namespace Flexiwind\Core;
+namespace FlexiCli\Core;
 
 
-use Flexiwind\Core\FileEditor;
-use Flexiwind\Core\StubStorage;
+use FlexiCli\Core\FileEditor;
+use FlexiCli\Core\StubStorage;
 
 class ConfigWriter
 {

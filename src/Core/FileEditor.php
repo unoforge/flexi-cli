@@ -1,6 +1,6 @@
 <?php
 
-namespace Flexiwind\Core;
+namespace FlexiCli\Core;
 
 class FileEditor
 {

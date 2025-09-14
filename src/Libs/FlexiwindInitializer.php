@@ -1,10 +1,10 @@
 <?php
 
-namespace Flexiwind\Libs;
+namespace FlexiCli\Libs;
 
-use Flexiwind\Core\{ConfigWriter, FileGenerator};
-use Flexiwind\Installer\PackageInstaller;
-use Flexiwind\Installer\{LivewireInstaller, AlpineInstaller, StimulusInstaller, UnoCSSInstaller, TailwindInstaller};
+use FlexiCli\Core\{ConfigWriter, FileGenerator};
+use FlexiCli\Installer\PackageInstaller;
+use FlexiCli\Installer\{LivewireInstaller, AlpineInstaller, StimulusInstaller, UnoCSSInstaller, TailwindInstaller};
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 

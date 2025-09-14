@@ -1,6 +1,6 @@
 <?php
 
-namespace Flexiwind\Core;
+namespace FlexiCli\Core;
 
 use function Laravel\Prompts\{warning, error, info};
 

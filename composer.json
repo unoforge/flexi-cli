@@ -1,5 +1,6 @@
 {
-    "name": "flexiwind/cli",
+    "name": "unoforge/flexi-cli",
+    "description": "A modern CLI tool for rapidly scaffolding PHP web applications",
     "version": "0.0.0",
     "type": "cli",
     "require": {
@@ -12,10 +13,10 @@
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "Flexiwind\\": "src/"
+            "FlexiCli\\": "src/"
         }
     },
-     "bin": ["bin/flexiwind"],
+     "bin": ["bin/flexi-cli"],
     "authors": [
         {
             "name": "Johnkat Mj",

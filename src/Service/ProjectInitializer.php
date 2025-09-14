@@ -1,8 +1,8 @@
 <?php
 
-namespace Flexiwind\Service;
+namespace FlexiCli\Service;
 
-use Flexiwind\Service\ProjectDetector;
+use FlexiCli\Service\ProjectDetector;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 

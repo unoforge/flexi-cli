@@ -1,8 +1,8 @@
 <?php
 
-namespace Flexiwind\Service;
+namespace FlexiCli\Service;
 
-use Flexiwind\Installer\PackageInstaller;
+use FlexiCli\Installer\PackageInstaller;
 use Symfony\Component\Console\Output\OutputInterface;
 
 use function Laravel\Prompts\{text, spin, confirm, select, warning};

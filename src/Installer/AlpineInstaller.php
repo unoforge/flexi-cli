@@ -1,8 +1,8 @@
 <?php
 
-namespace Flexiwind\Installer;
+namespace FlexiCli\Installer;
 
-use Flexiwind\Installer\PackageInstaller;
+use FlexiCli\Installer\PackageInstaller;
 use function Laravel\Prompts\note;
 
 class AlpineInstaller implements InstallerInterface
