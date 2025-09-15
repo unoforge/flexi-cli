@@ -11,6 +11,16 @@ Flexiwind CLI is a command-line tool that streamlines the setup of modern web ap
 - **Component Registry**: Add pre-built UI components from remote registries
 - **Smart Detection**: Automatic project type and package manager detection
 
+## Documentation
+
+- Start here: [Docs Index](docs/README.md)
+- Commands:
+  - [init](docs/commands/init.md)
+  - [add](docs/commands/add.md)
+  - [build](docs/commands/build.md)
+  - [validate](docs/commands/validate.md)
+  - [clean:flux](docs/commands/clean-flux.md)
+
 ## Installation
 
 ### Global Installation (Recommended)
@@ -32,6 +42,9 @@ composer require --dev unoforge/flexi-cli
 ```bash
 # Create a new Laravel project with TailwindCSS
 flexi-cli init --new-laravel --tailwind
+
+# or
+php flexi-cli init --new-laravel --tailwind
 
 # Create a new Symfony project with UnoCSS
 flexi-cli init --new-symfony --uno
@@ -84,26 +97,17 @@ flexi-cli add @ui/card
 
 ## Features
 
-### ✅ Completed Features
-
 - **Project Initialization**: Interactive setup for new and existing projects
 - **Framework Detection**: Automatic Laravel/Symfony project detection
 - **Package Manager Detection**: Auto-detect npm, yarn, or pnpm
 - **CSS Framework Setup**: TailwindCSS and UnoCSS integration
 - **Interactive Components**:
   - Livewire integration for Laravel
+  - Stimulus JS setup for Symfony
   - Alpine.js setup
 - **Configuration Management**: YAML-based configuration files
 - **File Generation**: Base CSS, JS, and layout files
 
-
-### 🚧 In Progress
-
-- **Dependency Installation**: Automated package installation
-- **Config File Editing**: Vite and framework configuration updates
-- **Layout Generation**: Framework-specific layout creation and editing
-- **Stub System**: Template files for different frameworks and setups
-- **Component Registry**: Download and install components from remote sources
 
 ### 📋 Planned Features
 
