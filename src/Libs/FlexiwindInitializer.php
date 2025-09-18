@@ -4,7 +4,7 @@ namespace FlexiCli\Libs;
 
 use FlexiCli\Core\{ConfigWriter, FileGenerator};
 use FlexiCli\Installer\PackageInstaller;
-use FlexiCli\Installer\{LivewireInstaller, AlpineInstaller, StimulusInstaller, UnoCSSInstaller, TailwindInstaller};
+use FlexiCli\Installer\{LivewireInstaller, AlpineInstaller, StimulusInstaller, UnoCSSInstaller, TailwindInstaller, IconLibraryInstaller};
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -56,6 +56,12 @@ class FlexiwindInitializer
         }
 
 
+        // Icon Library
+        if ($answers['iconLibrary']!= null) {
+            $plan[] = 'iconLibrary';
+        } 
+
+
 
         // Config + base files
         spin(fn() => [$this->createConfigFiles($answers), $this->generateBaseFiles($projectType, $answers)], "Setting up config files...");
@@ -71,12 +77,16 @@ class FlexiwindInitializer
             'stimulus'   => new StimulusInstaller(),
             'unocss'     => new UnoCSSInstaller(),
             'tailwindcss' => new TailwindInstaller(),
+            'iconLibrary' => new IconLibraryInstaller($answers),
         ];
 
+        $icon = $answers['iconLibrary'] ?? '';
+
         foreach ($plan as $key) {
-            spin(fn() => $this->runInstaller($installers[$key], $packageManager, $projectPath, $answers, $key), "Installing {$key}...");
+            spin(fn() => $this->runInstaller($installers[$key], $packageManager, $projectPath, $answers, $key, $icon), "Installing {$key}...");
         }
         $output->writeln("<fg=green>✓ Packages Installation Completed</>");
+        $this->addInstallationCompleted($plan, $icon);
         $this->showCompletionSummary($output);
 
         return true;
@@ -85,7 +95,15 @@ class FlexiwindInitializer
     private function createConfigFiles(array $answers): void
     {
         ConfigWriter::createFlexiwindYaml($answers);
-        $this->completedActions[] = "Created: flexiwind.yaml";
+        $this->completedActions[] = "<fg=green>⇒ Created: flexiwind.yaml</>";
+    }
+
+    private function addInstallationCompleted($plan, $icon)
+    {
+        foreach ($plan as $key) {
+            $installed = $key =='iconLibrary' ? '@iconify/tailwind4 and '.$icon.' Icons' : $key;
+            $this->completedActions[] = "<fg=green>✓ Installed: ".$installed."</>";
+        }
     }
 
     private function generateBaseFiles(string $projectType, array $answers): void
@@ -94,25 +112,23 @@ class FlexiwindInitializer
 
         // Track created files based on project type
         if ($projectType === 'laravel') {
-            $this->completedActions[] = "Created: app/Flexiwind/UiHelper.php";
-            $this->completedActions[] = "Created: app/Flexiwind/ButtonHelper.php";
-            $this->completedActions[] = "Created: resources/views/layouts/base.blade.php";
-            $this->completedActions[] = "Created: {$answers['css']}/app.css";
+            $this->completedActions[] = "<fg=green>⇒ Created: app/Flexiwind/UiHelper.php</>";
+            $this->completedActions[] = "<fg=green>⇒ Created: app/Flexiwind/ButtonHelper.php</>";
+            $this->completedActions[] = "<fg=green>⇒ Created: resources/views/layouts/base.blade.php</>";
+            $this->completedActions[] = "<fg=green>⇒ Created: {$answers['css']}/app.css</>";
         } else {
-            $this->completedActions[] = "Created: {$answers['css']}/styles.css";
+            $this->completedActions[] = "<fg=green>⇒ Created: {$answers['css']}/styles.css</>";
         }
 
-        $this->completedActions[] = "Created: {$answers['js']}/flexilla.js";
-        $this->completedActions[] = "Created: {$answers['css']}/base-colors.css";
-        $this->completedActions[] = "Created: {$answers['css']}/flexiwind.css";
-        $this->completedActions[] = "Created: {$answers['css']}/button-styles.css";
-        $this->completedActions[] = "Created: {$answers['css']}/ui-utilities.css";
+        $this->completedActions[] = "<fg=green>⇒ Created: {$answers['js']}/flexilla.js</>";
+        $this->completedActions[] = "<fg=green>⇒ Created: {$answers['css']}/flexiwind.css</>";
+        $this->completedActions[] = "<fg=green>⇒ Created: {$answers['css']}/button-styles.css</>";
+        $this->completedActions[] = "<fg=green>⇒ Created: {$answers['css']}/ui-utilities.css</>";
     }
 
-    private function runInstaller($installer, string $packageManager, string $projectPath, array $answers, string $type): void
+    private function runInstaller($installer, string $packageManager, string $projectPath, array $answers, string $type, $icon): void
     {
         $installer->install($packageManager, $projectPath, $answers);
-        $this->completedActions[] = "<fg=green>✓ Installed: {$type}</>";
     }
 
     private function showCompletionSummary(OutputInterface $output): void

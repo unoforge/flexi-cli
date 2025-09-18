@@ -3,38 +3,41 @@
 namespace FlexiCli\Core;
 
 use FlexiCli\Core\{StubStorage, Constants};
+use FlexiCli\Service\CssStyleCompose;
 
 class FileGenerator
 {
     public static function generateBaseFiles(string $projectType, array $answers): void
     {
         if ($projectType === 'laravel') {
-            self::createLaravelFiles($answers['js'], $answers['css'], $answers['themingMode'], $answers['theme']);
+            self::createLaravelFiles($answers);
         } else {
-            self::createSymfonyFiles($answers['js'], $answers['css'], $answers['themingMode'], $answers['theme']);
+            self::createSymfonyFiles($answers);
         }
     }
 
-    public static function createFlexiwindFiles($jsFolder, $cssFolder, $themingMode, $mainCssFileName, $theme)
+    public static function createFlexiwindFiles($answers, $mainCssFileName)
     {
+        $jsFolder = $answers['js'];
+        $cssFolder = $answers['css'];
+        $themingMode = $answers['themingMode'];
+        $theme = $answers['theme'];
         // Create directories if they don't exist
         if (!is_dir($jsFolder)) {
             mkdir($jsFolder, Constants::DIR_PERMISSIONS, true);
         }
         if (!is_dir($cssFolder)) {
             mkdir($cssFolder, Constants::DIR_PERMISSIONS, true);
-        }
+        } 
         $themingFolder = strtolower($themingMode) == 'both' ? '' : strtolower($themingMode) . '.';
 
-        file_put_contents(
-            $cssFolder . '/base-colors.css',
-            StubStorage::get('themes.tailwind.' . $theme)
-        );
+
+        $app_style = CssStyleCompose::get($answers, $themingMode, $theme);
         
 
         file_put_contents(
             $cssFolder . "/$mainCssFileName.css",
-            StubStorage::get('css.' . $themingFolder . 'base')
+            $app_style
         );
         file_put_contents(
             $jsFolder . '/flexilla.js',
@@ -54,8 +57,13 @@ class FileGenerator
         );
     }
 
-    private static function createLaravelFiles($jsFolder, $cssFolder, $themingMode, $theme): void
+    private static function createLaravelFiles($answers): void
     {
+        $jsFolder = $answers['js'];
+        $cssFolder = $answers['css'];
+        $themingMode = $answers['themingMode'];
+        $theme = $answers['theme'];
+        $mainCssFileName = 'app'; // Default filename for Laravel
         if (!is_dir('app/Flexiwind')) {
             mkdir('app/Flexiwind', Constants::DIR_PERMISSIONS, true);
         }
@@ -72,16 +80,21 @@ class FileGenerator
             StubStorage::get('laravel.button_helper')
         );
 
-        self::createFlexiwindFiles($jsFolder, $cssFolder, $themingMode, 'app', $theme);
+        self::createFlexiwindFiles($answers, $mainCssFileName);
         self::createLaravelBaseLayout();
     }
 
 
-    private static function createSymfonyFiles($jsFolder, $cssFolder, $themingMode, $theme): void
+    private static function createSymfonyFiles($answers): void
     {
         // to be improved : init stimulus, create required files...
 
-        self::createFlexiwindFiles($jsFolder, $cssFolder, $themingMode, 'styles', $theme);
+        $jsFolder = $answers['js'];
+        $cssFolder = $answers['css'];
+        $themingMode = $answers['themingMode'];
+        $theme = $answers['theme'];
+        $mainCssFileName = 'styles'; // Default filename for Symfony
+        self::createFlexiwindFiles($answers, $mainCssFileName);
         self::createSymfonyBaseLayout();
     }
 

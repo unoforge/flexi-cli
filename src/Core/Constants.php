@@ -49,6 +49,19 @@ class Constants
     public const CSS_FRAMEWORKS = ['tailwindcss', 'unocss'];
 
     /**
+     * Supported icon libraries
+     */
+    public const ICON_LIBRARIES = ['phosphore', 'heroicons', 'lucide','hugeicons'];
+
+    public const UI_ICONS = [
+        'phosphore'=>'ph',
+        'heroicons'=>'heroicons',
+        'lucide'=>'lucide',
+        'hugeicons'=>'hugeicons',
+    ];
+
+
+    /**
      * Supported themes
      */
     public const THEMES = ['flexiwind', 'water', 'earth', 'fire', 'air'];
@@ -84,6 +97,7 @@ class Constants
         'registry:style',
         'registry:config'
     ];
+
 
     /**
      * Default component type
