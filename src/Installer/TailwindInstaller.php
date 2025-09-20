@@ -12,10 +12,8 @@ class TailwindInstaller implements InstallerInterface
     {
         if (!PackageInstaller::node($packageManager, $dir)->isInstalled('tailwindcss')) {
             PackageInstaller::node($packageManager, $dir)->install('tailwindcss @tailwindcss/vite');
-            ConfigWriter::updateTailwindViteConfig();
         } elseif (!PackageInstaller::node($packageManager, $dir)->isInstalled('@tailwindcss/vite')) {
             PackageInstaller::node($packageManager, $dir)->install('@tailwindcss/vite');
-            ConfigWriter::updateTailwindViteConfig();
         } else {
             note('TailwindCSS is already installed.');
         }

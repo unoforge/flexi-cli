@@ -44,6 +44,14 @@ class ProjectCreator
             default: 'my-app'
         );
 
+        // Check if directory with the same name already exists in current directory
+        while (is_dir($name)) {
+            $name = text(
+                label: "The directory '{$name}' already exists. Please enter a different name for your project:",
+                default: 'my-app'
+            );
+        }
+
         $useStarter = confirm('Do you want to use a starter project?', false);
 
         if ($useStarter) {
