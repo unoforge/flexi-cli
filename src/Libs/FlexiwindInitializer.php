@@ -47,21 +47,20 @@ class FlexiwindInitializer
         if ($projectType === 'symfony' && !empty($answers['stimulus'])) {
             $plan[] = 'stimulus';
         }
+        $cssFramework = $answers['cssFramework'] ?? null;
 
         // CSS Framework
-        if (($answers['cssFramework'] ?? null) === 'unocss') {
+        if ($cssFramework === 'unocss') {
             $plan[] = 'unocss';
-        } elseif (($answers['cssFramework'] ?? null) === 'tailwindcss') {
+        } elseif ($cssFramework === 'tailwindcss') {
             $plan[] = 'tailwindcss';
         }
 
 
         // Icon Library
-        if ($answers['iconLibrary']!= null) {
+        if ($answers['iconLibrary'] != null) {
             $plan[] = 'iconLibrary';
-        } 
-
-
+        }
 
         // Config + base files
         spin(fn() => [$this->createConfigFiles($answers), $this->generateBaseFiles($projectType, $answers)], "Setting up config files...");
@@ -86,7 +85,7 @@ class FlexiwindInitializer
             spin(fn() => $this->runInstaller($installers[$key], $packageManager, $projectPath, $answers, $key, $icon), "Installing {$key}...");
         }
         $output->writeln("<fg=green>✓ Packages Installation Completed</>");
-        $this->addInstallationCompleted($plan, $icon);
+        $this->addInstallationCompleted($plan, $icon, $cssFramework);
         $this->showCompletionSummary($output);
 
         return true;
@@ -98,11 +97,16 @@ class FlexiwindInitializer
         $this->completedActions[] = "<fg=green>⇒ Created: flexiwind.yaml</>";
     }
 
-    private function addInstallationCompleted($plan, $icon)
+    private static function getIconInstalled($cssFramework, $icon)
+    {
+        return $cssFramework === 'tailwindcss' ? '@iconify/tailwind4 and ' . $icon . ' Icons' : $icon . ' Icons';
+    }
+
+    private function addInstallationCompleted($plan, $icon, $cssFramework)
     {
         foreach ($plan as $key) {
-            $installed = $key =='iconLibrary' ? '@iconify/tailwind4 and '.$icon.' Icons' : $key;
-            $this->completedActions[] = "<fg=green>✓ Installed: ".$installed."</>";
+            $installed = $key == 'iconLibrary' ? self::getIconInstalled($cssFramework, $icon) : $key;
+            $this->completedActions[] = "<fg=green>✓ Installed: " . $installed . "</>";
         }
     }
 
@@ -114,16 +118,23 @@ class FlexiwindInitializer
         if ($projectType === 'laravel') {
             $this->completedActions[] = "<fg=green>⇒ Created: app/Flexiwind/UiHelper.php</>";
             $this->completedActions[] = "<fg=green>⇒ Created: app/Flexiwind/ButtonHelper.php</>";
-            $this->completedActions[] = "<fg=green>⇒ Created: resources/views/layouts/base.blade.php</>";
+            $this->completedActions[] = "<fg=green>⇒ Created: resources/views/components/layouts/base.blade.php</>";
             $this->completedActions[] = "<fg=green>⇒ Created: {$answers['css']}/app.css</>";
+            $this->completedActions[] = "<fg=yellow>⇒ TODO: Don't forget to add 'resources/js/flexilla.js' in your vite config</>";
         } else {
             $this->completedActions[] = "<fg=green>⇒ Created: {$answers['css']}/styles.css</>";
         }
 
         $this->completedActions[] = "<fg=green>⇒ Created: {$answers['js']}/flexilla.js</>";
-        $this->completedActions[] = "<fg=green>⇒ Created: {$answers['css']}/flexiwind.css</>";
-        $this->completedActions[] = "<fg=green>⇒ Created: {$answers['css']}/button-styles.css</>";
-        $this->completedActions[] = "<fg=green>⇒ Created: {$answers['css']}/ui-utilities.css</>";
+        if ($answers['cssFramework'] === 'tailwindcss') {
+            $this->completedActions[] = "<fg=green>⇒ Created: {$answers['css']}/flexiwind.css</>";
+            $this->completedActions[] = "<fg=green>⇒ Created: {$answers['css']}/button-styles.css</>";
+            $this->completedActions[] = "<fg=green>⇒ Created: {$answers['css']}/ui-utilities.css</>";
+        } else {
+            $this->completedActions[] = "<fg=green>⇒ Created: {$answers['css']}/theme.css</>";
+            $this->completedActions[] = "<fg=green>⇒ Created: vite.config.js</>";
+            $this->completedActions[] = "<fg=green>⇒ Created: postcss.config.mjs</>";
+        }
     }
 
     private function runInstaller($installer, string $packageManager, string $projectPath, array $answers, string $type, $icon): void
