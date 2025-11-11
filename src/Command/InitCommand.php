@@ -64,7 +64,7 @@ class InitCommand extends Command
             return Command::FAILURE;
         }
 
-        if ($projectAnswers['fromStarter']) {
+        if (!empty($projectAnswers['fromStarter'])) {
             info('Starter projects are not yet implemented.');
             return Command::SUCCESS;
         }

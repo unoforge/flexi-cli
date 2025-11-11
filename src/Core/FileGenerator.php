@@ -30,6 +30,10 @@ class FileGenerator
             mkdir($cssFolder, Constants::DIR_PERMISSIONS, true);
         }
 
+        if (!is_dir($cssFolder.'/flexiwind')) {
+            mkdir($cssFolder.'/flexiwind', Constants::DIR_PERMISSIONS, true);
+        }
+
         file_put_contents(
             $jsFolder . '/flexilla.js',
             StubStorage::get('js.flexilla')
@@ -55,9 +59,27 @@ class FileGenerator
         );
 
         file_put_contents(
-            $cssFolder . '/flexiwind.css',
-            StubStorage::get('css.flexiwind')
+            $cssFolder . '/flexiwind/base.css',
+            StubStorage::get('css.flexiwind.base')
         );
+        file_put_contents(
+            $cssFolder . '/flexiwind/form.css',
+            StubStorage::get('css.flexiwind.form')
+        );
+        file_put_contents(
+            $cssFolder . '/flexiwind/button.css',
+            StubStorage::get('css.flexiwind.button')
+        );
+        file_put_contents(
+            $cssFolder . '/flexiwind/ui.css',
+            StubStorage::get('css.flexiwind.ui')
+        );
+        file_put_contents(
+            $cssFolder . '/flexiwind/utils.css',
+            StubStorage::get('css.flexiwind.utils')
+        );
+
+
         file_put_contents(
             $cssFolder . '/button-styles.css',
             StubStorage::get('css.' . $themingFolder . 'buttons')
@@ -142,11 +164,11 @@ class FileGenerator
 
     public static function createLaravelBaseLayout()
     {
-        if (!is_dir('resources/views/components/layouts')) {
-            mkdir('resources/views/components/layouts', 0755, true);
+        if (!is_dir('resources/views/layouts')) {
+            mkdir('resources/views/layouts', 0755, true);
         }
         file_put_contents(
-            'resources/views/components/layouts/base.blade.php',
+            'resources/views/layouts/base.blade.php',
             StubStorage::get('laravel.app_layout')
         );
     }
