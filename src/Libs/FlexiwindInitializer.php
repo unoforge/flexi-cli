@@ -118,7 +118,7 @@ class FlexiwindInitializer
         if ($projectType === 'laravel') {
             $this->completedActions[] = "<fg=green>⇒ Created: app/Flexiwind/UiHelper.php</>";
             $this->completedActions[] = "<fg=green>⇒ Created: app/Flexiwind/ButtonHelper.php</>";
-            $this->completedActions[] = "<fg=green>⇒ Created: resources/views/components/layouts/base.blade.php</>";
+            $this->completedActions[] = "<fg=green>⇒ Created: resources/views/layouts/base.blade.php</>";
             $this->completedActions[] = "<fg=green>⇒ Created: {$answers['css']}/app.css</>";
             $this->completedActions[] = "<fg=yellow>⇒ TODO: Don't forget to add 'resources/js/flexilla.js' in your vite config</>";
         } else {

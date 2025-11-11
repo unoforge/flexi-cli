@@ -24,33 +24,35 @@ class ProjectInitializer
             $initProjectFromCli = true;
         }
 
-        if (!ProjectDetector::check_Composer(getcwd())) {
-            $output->writeln('<fg=red>✘ No composer.json found.</>');
+        // Only check for existing projects if we haven't already created a new one
+        if (!$initProjectFromCli) {
+            if (!ProjectDetector::check_Composer(getcwd())) {
+                $output->writeln('<fg=red>✘ No composer.json found.</>');
 
-            $framework = select(
-                label: 'What framework are you using?',
-                options: ['laravel', 'symfony'],
-                default: 'laravel',
-            );
-            $projectAnswers = match ($framework) {
-                'laravel' => (new ProjectCreator())->createLaravel($output),
-                'symfony' => (new ProjectCreator())->createSymfony($output),
-                default   => (new ProjectCreator())->createLaravel($output),
-            };
+                $framework = select(
+                    label: 'What framework are you using?',
+                    options: ['laravel', 'symfony'],
+                    default: 'laravel',
+                );
+                $projectAnswers = match ($framework) {
+                    'laravel' => (new ProjectCreator())->createLaravel($output),
+                    'symfony' => (new ProjectCreator())->createSymfony($output),
+                    default   => (new ProjectCreator())->createLaravel($output),
+                };
 
 
-            $initProjectFromCli = true;
-        } else {
-            // Handle existing projects - ask about framework-specific features
-            $detectedFramework = ProjectDetector::detect();
-
-            if ($detectedFramework === 'laravel') {
-                $projectAnswers = $this->handleExistingLaravel();
-            } elseif ($detectedFramework === 'symfony') {
-                $projectAnswers = $this->handleExistingSymfony();
+                $initProjectFromCli = true;
             } else {
-                // Generic project
-                $projectAnswers = [];
+                // Handle existing projects - ask about framework-specific features
+                $detectedFramework = ProjectDetector::detect();
+                if ($detectedFramework === 'laravel') {
+                    $projectAnswers = $this->handleExistingLaravel();
+                } elseif ($detectedFramework === 'symfony') {
+                    $projectAnswers = $this->handleExistingSymfony();
+                } else {
+                    // Generic project
+                    $projectAnswers = [];
+                }
             }
         }
 
@@ -71,7 +73,7 @@ class ProjectInitializer
             $alpine = $projectCreator->askAlpine();
         }
 
-        return compact('livewire', 'alpine', 'volt');
+        return compact('livewire', 'alpine', 'volt') + ['fromStarter' => false];
     }
 
     private function handleExistingSymfony(): array
@@ -79,6 +81,6 @@ class ProjectInitializer
         $projectCreator = new ProjectCreator();
         $stimulus = $projectCreator->askStimulus();
 
-        return compact('stimulus');
+        return compact('stimulus') + ['fromStarter' => false];
     }
 }

@@ -11,7 +11,8 @@ class CssStyleCompose
         $colors = StubStorage::get('themes.tailwind.' . $theme); 
         $icon = Constants::UI_ICONS[$answers['iconLibrary']];
 
-        $headStyle = "@import \"tailwindcss\";\n@reference \"./flexiwind.css\";\n@reference \"./button-styles.css\";\n@reference \"./ui-utilities.css\";";
+        $headStyle = "@import \"tailwindcss\";\n@reference \"./flexiwind/base.css\"\n@reference \"./flexiwind/form.css\";\n@reference \"./flexiwind/button.css\";\n@reference \"./flexiwind/ui.css\";\n@reference \"./flexiwind/utils.css\";;\n@reference \"./button-styles.css\";\n@reference \"./ui-utilities.css\";";
+        // 
 
 
 $plugin = "@plugin \"@iconify/tailwind4\" {\n  prefixes: $icon;\n  scale: 1.2;\n}\n";
