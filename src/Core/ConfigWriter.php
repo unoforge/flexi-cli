@@ -25,6 +25,9 @@ class ConfigWriter
         $yaml .= "theme: {$answers['theme']}\n";
         $yaml .= "themeMode: {$answers['themingMode']}\n";
         $yaml .= "cssFramework: {$answers['cssFramework']}\n";
+        if (isset($answers['iconLibrary']) && !empty($answers['iconLibrary'])) {
+            $yaml .= "iconLibrary: {$answers['iconLibrary']}\n";
+        }
         $yaml .= "js_folder: {$answers['js']}\n";
         $yaml .= "css_folder: {$answers['css']}\n";
         

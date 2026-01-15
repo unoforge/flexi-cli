@@ -17,6 +17,7 @@ use FlexiCli\Command\AddCommand;
 use Symfony\Component\Console\Application;
 use FlexiCli\Command\InitCommand;
 use FlexiCli\Command\CleanFluxCommand;
+use FlexiCli\Command\FixIcons;
 
 $application = new Application('Flexi-CLI', '0.0.2');
 
@@ -26,5 +27,6 @@ $application->add(new AddCommand());
 $application->add(new BuildCommand());
 $application->add(new ValidateCommand());
 $application->add(new CleanFluxCommand());
+$application->add(new FixIcons());
 
 $application->run();
