@@ -10,12 +10,12 @@ class Constants
     /**
      * Default registry URL for component fetching
      */
-    public const DEFAULT_REGISTRY = 'https://flexiwind.org/registries/{name}.json';
+    public const DEFAULT_REGISTRY = 'https://raw.githubusercontent.com/unoforge/flexiwind/refs/heads/main/public/r/{name}.json';
 
     /**
      * Local development registry URL
      */
-    public const LOCAL_REGISTRY = 'http://localhost:4500/public/r/{name}.json';
+    public const LOCAL_REGISTRY = 'https://raw.githubusercontent.com/unoforge/flexiwind/refs/heads/main/public/r/{name}.json';
 
     /**
      * Official Flexiwind registry namespace
@@ -47,6 +47,19 @@ class Constants
      * Supported CSS frameworks
      */
     public const CSS_FRAMEWORKS = ['tailwindcss', 'unocss'];
+
+    /**
+     * Supported icon libraries
+     */
+    public const ICON_LIBRARIES = ['phosphore', 'heroicons', 'lucide','hugeicons'];
+
+    public const UI_ICONS = [
+        'phosphore'=>'ph',
+        'heroicons'=>'heroicons',
+        'lucide'=>'lucide',
+        'hugeicons'=>'hugeicons',
+    ];
+
 
     /**
      * Supported themes
@@ -84,6 +97,7 @@ class Constants
         'registry:style',
         'registry:config'
     ];
+
 
     /**
      * Default component type

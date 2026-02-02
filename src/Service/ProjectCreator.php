@@ -15,14 +15,13 @@ class ProjectCreator
         $app = $this->runComposerInit('Laravel', $output, true);
         $projectPath = $app['projectPath'];
         $fromStarter = $app['fromStarter'];
-        $livewire = $alpine = $volt = false;
+        $livewire = $alpine = false;
 
         if (!$fromStarter) {
             $livewire = $this->askLivewire();
-            if ($livewire) $volt = $this->askLivewireVolt();
             if (!$livewire) $alpine = $this->askAlpine();
         }
-        return compact('livewire', 'alpine', 'volt', 'projectPath', 'fromStarter');
+        return compact('livewire', 'alpine', 'projectPath', 'fromStarter');
     }
 
     public function createSymfony(OutputInterface $output): array
@@ -43,6 +42,14 @@ class ProjectCreator
             label: 'What is the name of your project?',
             default: 'my-app'
         );
+
+        // Check if directory with the same name already exists in current directory
+        while (is_dir($name)) {
+            $name = text(
+                label: "The directory '{$name}' already exists. Please enter a different name for your project:",
+                default: 'my-app'
+            );
+        }
 
         $useStarter = confirm('Do you want to use a starter project?', false);
 
@@ -83,13 +90,7 @@ class ProjectCreator
 
         return confirm('Do you want to install livewire?');
     }
-    public function askLivewireVolt()
-    {
-        if (PackageInstaller::composer()->isInstalled('livewire/volt')) {
-            return true;
-        }
-        return confirm('Do you want to use Livewire Volt?');
-    }
+
     public function askAlpine()
     {
         return confirm('Do you want to install AlpineJS?');
@@ -106,10 +107,10 @@ class ProjectCreator
         $starters = select(
             label: 'What starter do you want to use?',
             options: [
-                'uno_livewire' => "Livewire + UnoCSS + Volt",
+                'uno_livewire' => "Livewire + UnoCSS",
                 'uno_blade' => "Blade + UnoCSS",
                 'uno_blade_alpineJS' => "UnoCSS + AlpineJS + Blade",
-                'tailwind_livewire' => "Livewire + TailwindCSS + Volt",
+                'tailwind_livewire' => "Livewire + TailwindCSS",
                 'tailwind_blade' => "Blade + TailwindCSS",
                 'tailwind_blade_alpineJS' => "TailwindCSS + AlpineJS + Blade"
             ],

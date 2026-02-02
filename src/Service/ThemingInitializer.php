@@ -10,7 +10,7 @@ class ThemingInitializer
     public function askTheming(string $defaultFramework = '', bool $isFlexiwind=true): array
     {
         $cssFramework = $defaultFramework;
-        $themingMode = $theme = '';
+        $themingMode = $theme = $iconLibrary = '';
 
 
         if ($isFlexiwind) {
@@ -33,11 +33,16 @@ class ThemingInitializer
                 options: Constants::THEMING_MODES,
                 default: 'Both',
             );
+            $iconLibrary = select(
+                label: '🎨 Which Icon Library would you like to use?',
+                options: Constants::ICON_LIBRARIES,
+                default: 'phosphore',
+            );
         }else{
             // todo
         }
 
 
-        return compact('cssFramework', 'theme', 'themingMode');
+        return compact('cssFramework', 'theme', 'themingMode','iconLibrary');
     }
 }

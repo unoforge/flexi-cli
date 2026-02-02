@@ -1,13 +1,13 @@
 {
     "name": "unoforge/flexi-cli",
     "description": "A modern CLI tool for rapidly scaffolding PHP web applications",
-    "version": "0.0.2",
+    "version": "0.0.4",
     "type": "cli",
     "require": {
         "symfony/console": "^7.3",
         "symfony/yaml": "^7.3",
         "symfony/http-client": "^7.3",
-        "laravel/prompts": "^0.3.6",
+        "laravel/prompts": "^0.3.10",
         "symfony/process": "^7.3"
     },
     "license": "MIT",
