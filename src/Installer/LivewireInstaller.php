@@ -12,9 +12,5 @@ class LivewireInstaller implements InstallerInterface
             PackageInstaller::node($packageManager)->remove('alpinejs');
         }
         PackageInstaller::composer()->install('livewire/livewire');
-        if ($options['volt']) {
-            PackageInstaller::composer()->install('livewire/volt');
-            exec("php artisan volt:install");
-        }
     }
 }

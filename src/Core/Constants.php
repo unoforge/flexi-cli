@@ -10,12 +10,12 @@ class Constants
     /**
      * Default registry URL for component fetching
      */
-    public const DEFAULT_REGISTRY = 'https://raw.githubusercontent.com/unoforge/laravel-ui/refs/heads/main/public/r/{name}.json';
+    public const DEFAULT_REGISTRY = 'https://raw.githubusercontent.com/unoforge/flexiwind/refs/heads/main/public/r/{name}.json';
 
     /**
      * Local development registry URL
      */
-    public const LOCAL_REGISTRY = 'https://raw.githubusercontent.com/unoforge/laravel-ui/refs/heads/main/public/r/{name}.json';
+    public const LOCAL_REGISTRY = 'https://raw.githubusercontent.com/unoforge/flexiwind/refs/heads/main/public/r/{name}.json';
 
     /**
      * Official Flexiwind registry namespace

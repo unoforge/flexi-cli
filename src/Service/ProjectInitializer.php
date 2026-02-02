@@ -10,7 +10,7 @@ use function Laravel\Prompts\{select};
 
 class ProjectInitializer
 {
-    public function initialize(InputInterface $input,OutputInterface $output): array
+    public function initialize(InputInterface $input, OutputInterface $output): array
     {
         $projectAnswers = [];
         $initProjectFromCli = false;
@@ -64,16 +64,14 @@ class ProjectInitializer
         $projectCreator = new ProjectCreator();
         // Ask about Livewire
         $livewire = $projectCreator->askLivewire();
-        $volt = false;
+
         $alpine = false;
 
-        if ($livewire) {
-            $volt = $projectCreator->askLivewireVolt();
-        } else {
+        if (!$livewire) {
             $alpine = $projectCreator->askAlpine();
         }
 
-        return compact('livewire', 'alpine', 'volt') + ['fromStarter' => false];
+        return compact('livewire', 'alpine') + ['fromStarter' => false];
     }
 
     private function handleExistingSymfony(): array
