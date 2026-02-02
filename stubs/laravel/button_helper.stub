@@ -74,7 +74,7 @@ class ButtonHelper
                 'warning' => 'btn-flexi-warning text-white',
                 'gray' => 'btn-flexi-gray text-white',
                 'neutral' => 'btn-flexi-neutral text-bg',
-                'white'=>'btn-flexi-white'
+                'white'=>'btn-flexi-white text-fg hover:text-fg-title'
             ],
         ],
         'none' => [
