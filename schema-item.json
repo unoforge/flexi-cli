@@ -124,7 +124,10 @@
       "minItems": 1,
       "items": {
         "type": "object",
-        "required": ["path", "type"],
+        "required": [
+          "path",
+          "type"
+        ],
         "properties": {
           "path": {
             "type": "string",
@@ -153,6 +156,14 @@
           "content": {
             "type": "string",
             "description": "Content of the file"
+          },
+          "replace": {
+            "type": "object",
+            "description": "String replacements to apply to this file during build",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "default": {}
           }
         },
         "additionalProperties": false
@@ -166,11 +177,19 @@
           "type": "array",
           "items": {
             "type": "object",
-            "required": ["action", "content"],
+            "required": [
+              "action",
+              "content"
+            ],
             "properties": {
               "action": {
                 "type": "string",
-                "enum": ["append", "prepend", "replace", "insert"]
+                "enum": [
+                  "append",
+                  "prepend",
+                  "replace",
+                  "insert"
+                ]
               },
               "content": {
                 "type": "string"

@@ -17,13 +17,20 @@ class BuildCommand extends Command
     protected function configure()
     {
         $this->setName('build')
-            ->setDescription('Build registries from flexiwind.schema.json')
+            ->setDescription('Build registries from schema file')
             ->addOption(
                 'output',
                 'o',
                 InputOption::VALUE_OPTIONAL,
                 'Output directory name (relative to current directory)',
                 Constants::DEFAULT_BUILD_OUTPUT
+            )
+            ->addOption(
+                'schema',
+                's',
+                InputOption::VALUE_OPTIONAL,
+                'The schema file to build from',
+                'registry.json'
             );
     }
 
@@ -31,11 +38,16 @@ class BuildCommand extends Command
     {
         $builder = new RegistryBuilder();
         $outputDir = $input->getOption('output');
+        $schemaPath = $input->getOption('schema');
         $cleanOutputDir = trim($outputDir, '/\\');
         $fullOutputPath = getcwd() . DIRECTORY_SEPARATOR . $cleanOutputDir;
 
         try {
-            $builder->build('registry.json', $fullOutputPath);
+            if (!file_exists($schemaPath)) {
+                error("Schema file not found: {$schemaPath}");
+                return Command::FAILURE;
+            }
+            $builder->build($schemaPath, $fullOutputPath);
             info("Registries built successfully in: {$cleanOutputDir}");
         } catch (\Exception $e) {
             error($e->getMessage());
