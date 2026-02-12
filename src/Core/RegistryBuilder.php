@@ -21,6 +21,8 @@ class RegistryBuilder
             mkdir($outputDir, 0777, true);
         }
 
+        $baseDir = dirname(realpath($schemaPath));
+
         foreach ($schema['components'] as $component) {
             $files = [];
             note("Building component: " . $component['name']);
@@ -34,21 +36,33 @@ class RegistryBuilder
                 'description' => $component['description'] ?? '',
             ];
 
-            spin(message: "Building files", callback: function () use ($component, &$files) {
+            spin(message: "Building files", callback: function () use ($component, &$files, $baseDir) {
                 foreach ($component['files'] as $fileItem) {
                     $filePath = $fileItem['path'];
+                    $fullSourcePath = $baseDir . DIRECTORY_SEPARATOR . $filePath;
 
-                    if (!file_exists($filePath)) {
-                        warning("⚠️ File not found: {$filePath} — skipping.");
+                    if (!file_exists($fullSourcePath)) {
+                        warning("⚠️ File not found: {$fullSourcePath} — skipping.");
                         continue; // Skip to next file
                     }
 
-                    $files[] = [
+                    $content = file_get_contents($fullSourcePath);
+
+                    $fileData = [
                         'path'    => $filePath,
                         'type'    => $fileItem['type'] ?? 'registry:component',
                         'target'  => $fileItem['target'] ?? $filePath,
-                        'content' => file_get_contents($filePath),
                     ];
+
+                    // Apply replacements if defined at the file level
+                    if (isset($fileItem['replace']) && is_array($fileItem['replace'])) {
+                        foreach ($fileItem['replace'] as $search => $replace) {
+                            $content = str_replace($search, $replace, $content);
+                        }
+                    }
+
+                    $fileData['content'] = $content;
+                    $files[] = $fileData;
                 }
             });
 
