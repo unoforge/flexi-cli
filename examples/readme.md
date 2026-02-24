@@ -12,7 +12,7 @@ If you're inside a project created for testing (one level deeper) run:
 
 Example — create a new Laravel project with Tailwind CSS:
 
-- php ../bin/flexi-cli init --new-laravel --tailwind
+- php ../bin/flexi-cli init --new-laravel
 
 
 Make the CLI executable
@@ -33,5 +33,4 @@ Notes:
 
 - Adjust the relative path to `bin/flexi-cli` depending on your current working directory.
 - These commands assume PHP is available on your PATH.
-
 

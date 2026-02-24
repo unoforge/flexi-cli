@@ -7,21 +7,13 @@ use function Laravel\Prompts\{select};
 
 class ThemingInitializer
 {
-    public function askTheming(string $defaultFramework = '', bool $isFlexiwind=true): array
+    public function askTheming(bool $isFlexiwind = true): array
     {
-        $cssFramework = $defaultFramework;
+        $cssFramework = 'tailwindcss';
         $themingMode = $theme = $iconLibrary = '';
 
 
         if ($isFlexiwind) {
-            if ($cssFramework === '') {
-                $cssFramework = select(
-                    label: '🎨 Which Styling Framework would you like to use?',
-                    options: Constants::CSS_FRAMEWORKS,
-                    default: 'tailwindcss',
-                );
-            }
-
             $theme = select(
                 label: '🎨 Which theme would you like to use?',
                 options: Constants::THEMES,

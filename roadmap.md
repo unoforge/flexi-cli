@@ -9,7 +9,7 @@
 - [x] Project initialization command (`init`)
 - [x] Framework detection (Laravel/Symfony)
 - [x] Package manager detection (npm/yarn/pnpm)
-- [x] CSS framework integration (TailwindCSS/UnoCSS)
+- [x] CSS framework integration (TailwindCSS)
 - [x] Interactive prompts with Laravel Prompts
 - [x] Configuration file generation (flexiwind.yaml)
 - [x] Base file generation system
@@ -21,10 +21,8 @@
 #### 🚧 In Progress
 - [ ] Complete dependency installation automation
 - [ ] Vite configuration editing
-- [ ] UnoCSS configuration setup
 - [ ] Registry JSON schema definition
 - [ ] Component registry integration
 - [ ] Laravel layout generation and editing
 - [ ] Error handling improvements
 - [ ] Command validation and feedback
-

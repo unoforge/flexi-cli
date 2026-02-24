@@ -44,11 +44,6 @@ class Constants
     public const DEFAULT_BUILD_OUTPUT = 'public/r';
 
     /**
-     * Supported CSS frameworks
-     */
-    public const CSS_FRAMEWORKS = ['tailwindcss', 'unocss'];
-
-    /**
      * Supported icon libraries
      */
     public const ICON_LIBRARIES = ['phosphore', 'heroicons', 'lucide','hugeicons'];

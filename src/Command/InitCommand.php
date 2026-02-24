@@ -33,8 +33,6 @@ class InitCommand extends Command
             ->setDescription('Initialize Flexiwind in your project')
             ->addOption('new-laravel', 'nl', InputOption::VALUE_NONE, 'Create a new Laravel project')
             ->addOption('new-symfony', 'ns', InputOption::VALUE_NONE, 'Create a new Symfony project')
-            ->addOption('tailwind', null, InputOption::VALUE_NONE, 'Use tailwindcss')
-            ->addOption('uno', null, InputOption::VALUE_NONE, 'Use UnoCSS')
             ->addOption('no-flexiwind', null, InputOption::VALUE_NONE, 'Initialize without Flexiwind UI')
             ->addOption('js-path', null, InputOption::VALUE_OPTIONAL, 'Path to the JS files', 'resources/js')
             ->addOption('css-path', null, InputOption::VALUE_OPTIONAL, 'Path to the CSS files', 'resources/css');
@@ -77,10 +75,7 @@ class InitCommand extends Command
 
         $projectType     = ProjectDetector::detect();
         $packageManager  = ProjectDetector::getNodePackageManager();
-        $themingAnswers  = $this->themingInitializer->askTheming(
-            $input->getOption('tailwind') ? 'tailwindcss' : ($input->getOption('uno') ? 'unocss' : ''),
-            $isFlexiwind
-        );
+        $themingAnswers  = $this->themingInitializer->askTheming($isFlexiwind);
 
         if ($isFlexiwind == 'flexiwind') {
             $this->flexiwindInitializer->initialize(

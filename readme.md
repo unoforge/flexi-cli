@@ -6,7 +6,7 @@
 
 Flexiwind CLI is a command-line tool that streamlines the setup of modern web applications by providing:
 - **Framework Support**: Laravel and Symfony project initialization
-- **CSS Framework Integration**: TailwindCSS and UnoCSS support
+- **CSS Framework Integration**: TailwindCSS support
 - **Interactive Components**: Livewire, Alpine.js, and Stimulus integration
 - **Component Registry**: Add pre-built UI components from remote registries
 - **Smart Detection**: Automatic project type and package manager detection
@@ -41,13 +41,13 @@ composer require --dev unoforge/flexi-cli
 
 ```bash
 # Create a new Laravel project with TailwindCSS
-flexi-cli init --new-laravel --tailwind
+flexi-cli init --new-laravel
 
 # or
-php flexi-cli init --new-laravel --tailwind
+php flexi-cli init --new-laravel
 
-# Create a new Symfony project with UnoCSS
-flexi-cli init --new-symfony --uno
+# Create a new Symfony project with TailwindCSS
+flexi-cli init --new-symfony
 
 # Initialize in existing project or empty project
 flexi-cli init
@@ -71,8 +71,6 @@ Initialize Flexiwind in your project with interactive setup.
 **Options:**
 - `--new-laravel, -nl`: Create a new Laravel project
 - `--new-symfony, -ns`: Create a new Symfony project
-- `--tailwind`: Use TailwindCSS
-- `--uno`: Use UnoCSS
 - `--css-path` : Path to the CSS files
 - `--js-path` : Path to the JS files
 - `--no-flexiwind` : Initialize without Flexiwind UI
@@ -100,7 +98,7 @@ flexi-cli add @ui/card
 - **Project Initialization**: Interactive setup for new and existing projects
 - **Framework Detection**: Automatic Laravel/Symfony project detection
 - **Package Manager Detection**: Auto-detect npm, yarn, or pnpm
-- **CSS Framework Setup**: TailwindCSS and UnoCSS integration
+- **CSS Framework Setup**: TailwindCSS integration
 - **Interactive Components**:
   - Livewire integration for Laravel
   - Stimulus JS setup for Symfony
@@ -133,8 +131,7 @@ flexi-cli/
 │   ├── js/                    # JavaScript templates
 │   ├── laravel/               # Laravel-specific templates
 │   ├── symfony/               # Symfony-specific templates
-│   ├── tailwind/              # TailwindCSS templates
-│   └── uno/                   # UnoCSS templates
+│   └── tailwind/              # TailwindCSS templates
 └── composer.json              # Package configuration
 ```
 

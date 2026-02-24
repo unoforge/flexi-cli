@@ -4,7 +4,7 @@ namespace FlexiCli\Libs;
 
 use FlexiCli\Core\{ConfigWriter, FileGenerator};
 use FlexiCli\Installer\PackageInstaller;
-use FlexiCli\Installer\{LivewireInstaller, AlpineInstaller, StimulusInstaller, UnoCSSInstaller, TailwindInstaller, IconLibraryInstaller};
+use FlexiCli\Installer\{LivewireInstaller, AlpineInstaller, StimulusInstaller, TailwindInstaller, IconLibraryInstaller};
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -50,9 +50,7 @@ class FlexiwindInitializer
         $cssFramework = $answers['cssFramework'] ?? null;
 
         // CSS Framework
-        if ($cssFramework === 'unocss') {
-            $plan[] = 'unocss';
-        } elseif ($cssFramework === 'tailwindcss') {
+        if ($cssFramework === 'tailwindcss') {
             $plan[] = 'tailwindcss';
         }
 
@@ -74,7 +72,6 @@ class FlexiwindInitializer
             'livewire'   => new LivewireInstaller($answers),
             'alpine'     => new AlpineInstaller(),
             'stimulus'   => new StimulusInstaller(),
-            'unocss'     => new UnoCSSInstaller(),
             'tailwindcss' => new TailwindInstaller(),
             'iconLibrary' => new IconLibraryInstaller($answers),
         ];
@@ -127,13 +124,15 @@ class FlexiwindInitializer
 
         $this->completedActions[] = "<fg=green>⇒ Created: {$answers['js']}/flexilla.js</>";
         if ($answers['cssFramework'] === 'tailwindcss') {
-            $this->completedActions[] = "<fg=green>⇒ Created: {$answers['css']}/flexiwind.css</>";
+            $this->completedActions[] = "<fg=green>⇒ Created: {$answers['css']}/flexiwind/base.css</>";
+            $this->completedActions[] = "<fg=green>⇒ Created: {$answers['css']}/flexiwind/button.css</>";
+            $this->completedActions[] = "<fg=green>⇒ Created: {$answers['css']}/flexiwind/form.css</>";
+            $this->completedActions[] = "<fg=green>⇒ Created: {$answers['css']}/flexiwind/ui.css</>";
+            $this->completedActions[] = "<fg=green>⇒ Created: {$answers['css']}/flexiwind/utils.css</>";
+
+
             $this->completedActions[] = "<fg=green>⇒ Created: {$answers['css']}/button-styles.css</>";
             $this->completedActions[] = "<fg=green>⇒ Created: {$answers['css']}/ui-utilities.css</>";
-        } else {
-            $this->completedActions[] = "<fg=green>⇒ Created: {$answers['css']}/theme.css</>";
-            $this->completedActions[] = "<fg=green>⇒ Created: vite.config.js</>";
-            $this->completedActions[] = "<fg=green>⇒ Created: postcss.config.mjs</>";
         }
     }
 
