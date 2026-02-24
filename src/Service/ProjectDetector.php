@@ -53,48 +53,6 @@ class ProjectDetector
         return false;
     }
 
-    public static function checkUnoCSS(): bool
-    {
-        $path = getcwd();
-        // Check if package.json exists
-        $packageJsonPath = $path . DIRECTORY_SEPARATOR . 'package.json';
-        if (!file_exists($packageJsonPath)) {
-            return false;
-        }
-
-        // Read and parse package.json
-        $packageJson = json_decode(file_get_contents($packageJsonPath), true);
-        if (!$packageJson) {
-            return false;
-        }
-
-        // Check for unocss in dependencies or devDependencies
-        $dependencies = array_merge(
-            $packageJson['dependencies'] ?? [],
-            $packageJson['devDependencies'] ?? []
-        );
-
-        if (isset($dependencies['unocss']) || isset($dependencies['@unocss/cli'])) {
-            return true;
-        }
-
-        // Also check for common UnoCSS config files
-        $configFiles = [
-            'uno.config.js',
-            'uno.config.ts',
-        ];
-
-        foreach ($configFiles as $configFile) {
-            if (file_exists($path . DIRECTORY_SEPARATOR . $configFile)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-
-
     public static function withBun(): bool
     {
         $path = getcwd();

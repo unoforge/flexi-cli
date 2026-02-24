@@ -55,7 +55,7 @@ Use Conventional Commits to keep history consistent:
 - `perf: performance improvements`
 
 Examples:
-- `feat(init): support --uno flag`
+- `feat(init): simplify default setup flow`
 - `fix(add): skip existing files without error`
 
 ## Code Style

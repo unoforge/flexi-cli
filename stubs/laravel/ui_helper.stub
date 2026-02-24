@@ -62,43 +62,10 @@ class UiHelper
         ],
     ];
 
-    protected static array $all_radius = [
-        'none' => '',
-        'xs' => 'rounded-xs',
-        'sm' => 'rounded-sm',
-        'md' => 'rounded-md',
-        'lg' => 'rounded-lg',
-        'xl' => 'rounded-xl',
-        '2xl' => 'rounded-2xl',
-        '3xl' => 'rounded-3xl',
-        'circle' => 'rounded-full'
-    ];
-
-    protected static array $all_card_radius = [
-        'none'  => '[--card-radius:var(--ui-radius,0px)]',
-        'xs'    => '[--card-radius:var(--ui-radius,var(--radius-xs))]',
-        'sm'    => '[--card-radius:var(--ui-radius,var(--radius-sm))]',
-        'md'    => '[--card-radius:var(--ui-radius,var(--radius-md))]',
-        'lg'    => '[--card-radius:var(--ui-radius,var(--radius-lg))]',
-        'xl'    => '[--card-radius:var(--ui-radius,var(--radius-xl))]',
-        '2xl'   => '[--card-radius:var(--ui-radius,var(--radius-2xl))]',
-        '3xl'   => '[--card-radius:var(--ui-radius,var(--radius-3xl))]',
-        'circle' => '[--card-radius:var(--ui-radius,var(--radius-circle))]',
-    ];
 
     public static function getVariants()
     {
         return self::$variants;
-    }
-
-    public static function getCardRadius(string $radius = 'md')
-    {
-        return self::$all_card_radius[$radius] ?? self::$all_card_radius['md'];
-    }
-
-    public static function getRadius(string $radius = 'md')
-    {
-        return self::$all_radius[$radius] ?? self::$all_radius['md'];
     }
 
     public static function getClasses(string $variant = 'solid', ?string $intent = 'gray'): string

@@ -2,7 +2,6 @@
 
 namespace FlexiCli\Installer;
 
-use FlexiCli\Core\ConfigWriter;
 use FlexiCli\Installer\PackageInstaller;
 use function Laravel\Prompts\note;
 

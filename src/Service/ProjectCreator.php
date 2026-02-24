@@ -107,9 +107,6 @@ class ProjectCreator
         $starters = select(
             label: 'What starter do you want to use?',
             options: [
-                'uno_livewire' => "Livewire + UnoCSS",
-                'uno_blade' => "Blade + UnoCSS",
-                'uno_blade_alpineJS' => "UnoCSS + AlpineJS + Blade",
                 'tailwind_livewire' => "Livewire + TailwindCSS",
                 'tailwind_blade' => "Blade + TailwindCSS",
                 'tailwind_blade_alpineJS' => "TailwindCSS + AlpineJS + Blade"

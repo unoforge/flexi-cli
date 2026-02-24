@@ -3,9 +3,7 @@
 namespace FlexiCli\Core;
 
 use FlexiCli\Core\{StubStorage, Constants};
-use FlexiCli\Service\ComposeUnoConfig;
 use FlexiCli\Service\CssStyleCompose;
-use FlexiCli\Service\UnoUiCompose;
 
 class FileGenerator
 {
@@ -90,39 +88,6 @@ class FileGenerator
         );
     }
 
-    public static function createUnoUiFiles($answers, $mainCssFileName, $framework)
-    {
-        $cssFolder = $answers['css'];
-        $themingMode = $answers['themingMode'];
-        $theme = $answers['theme'];
-        // Create directories if they don't exist
-        self::createShared($answers);
-
-        $postcssConfig = ComposeUnoConfig::getPostCSSConfig($framework);
-        $unoConfig = ComposeUnoConfig::get($answers, $themingMode, $framework);
-
-        $app_style = UnoUiCompose::get($themingMode);
-        $theme = UnoUiCompose::getTheme($theme);
-
-
-        file_put_contents(
-            'postcss.config.js',
-            $postcssConfig
-        );
-        file_put_contents(
-            'uno.config.js',
-            $unoConfig
-        );
-        file_put_contents(
-            $cssFolder . '/theme.css',
-            $theme
-        );
-        file_put_contents(
-            $cssFolder . "/$mainCssFileName.css",
-            $app_style
-        );
-    }
-
     private static function createLaravelFiles($answers): void
     {
         $mainCssFileName = 'app'; // Default filename for Laravel
@@ -140,11 +105,7 @@ class FileGenerator
             StubStorage::get('laravel.button_helper')
         );
 
-        if ($answers['cssFramework'] == 'tailwindcss') {
-            self::createFlexiwindFiles($answers, $mainCssFileName);
-        } else {
-            self::createUnoUiFiles($answers, $mainCssFileName, 'laravel');
-        }
+        self::createFlexiwindFiles($answers, $mainCssFileName);
         self::createLaravelBaseLayout();
     }
 
@@ -154,11 +115,7 @@ class FileGenerator
         // to be improved : init stimulus, create required files...
 
         $mainCssFileName = 'styles'; // Default filename for Symfony
-        if ($answers['cssFramework'] == 'tailwindcss') {
-            self::createFlexiwindFiles($answers, $mainCssFileName);
-        } else {
-            self::createUnoUiFiles($answers, $mainCssFileName, 'symfony');
-        }
+        self::createFlexiwindFiles($answers, $mainCssFileName);
         self::createSymfonyBaseLayout();
     }
 

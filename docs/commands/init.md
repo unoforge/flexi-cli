@@ -5,7 +5,7 @@ Initialize Flexiwind in your project.
 ## Synopsis
 
 ```bash
-flexi-cli init [--new-laravel|-nl] [--new-symfony|-ns] [--tailwind] [--uno] [--no-flexiwind] [--js-path <path>] [--css-path <path>]
+flexi-cli init [--new-laravel|-nl] [--new-symfony|-ns] [--no-flexiwind] [--js-path <path>] [--css-path <path>]
 ```
 
 ## Description
@@ -18,8 +18,6 @@ If `flexiwind.yaml` already exists and is valid, the command exits early.
 
 - `--new-laravel, -nl`: Create a new Laravel project
 - `--new-symfony, -ns`: Create a new Symfony project
-- `--tailwind`: Use TailwindCSS
-- `--uno`: Use UnoCSS
 - `--no-flexiwind`: Initialize without Flexiwind UI
 - `--js-path <path>`: Path to JavaScript files (default `resources/js`)
 - `--css-path <path>`: Path to CSS files (default `resources/css`)
@@ -28,10 +26,10 @@ If `flexiwind.yaml` already exists and is valid, the command exits early.
 
 ```bash
 # New Laravel with Tailwind
-flexi-cli init --new-laravel --tailwind
+flexi-cli init --new-laravel
 
-# New Symfony with UnoCSS
-flexi-cli init --new-symfony --uno
+# New Symfony with Tailwind
+flexi-cli init --new-symfony
 
 # Initialize in current folder
 flexi-cli init

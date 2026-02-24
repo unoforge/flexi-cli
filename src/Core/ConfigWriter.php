@@ -53,37 +53,6 @@ class ConfigWriter
         FileEditor::updateFileContent($viteConfigPath, $newConfig);
     }
 
-    public static function updateUnoConfig(): void
-    {
-        $unoConfigPath = self::findUnoConfigFile();
-
-        if (!$unoConfigPath) {
-            $unoConfigPath = getcwd() . '/uno.config.js';
-        }
-        $newConfig = StubStorage::get('uno.config.js');
-        FileEditor::updateFileContent($unoConfigPath, $newConfig);
-    }
-
-    public static function addPostCssConfigUno()
-    {
-        if (!file_exists(getcwd() . '/postcss.config.js')) {
-            touch(getcwd() . '/postcss.config.js');
-        }
-        FileEditor::updateFileContent(getcwd() . '/postcss.config.js', StubStorage::get('uno.postcss'));
-    }
-
-    public static function updateUnoViteConfig(): void
-    {
-        $viteConfigPath = self::findViteConfigFile();
-
-        if (!$viteConfigPath) {
-            throw new \RuntimeException("Vite config file not found. Expected vite.config.js or vite.config.ts");
-        }
-
-        $newConfig = StubStorage::get('uno.vite');
-        FileEditor::updateFileContent($viteConfigPath, $newConfig);
-    }
-
     private static function findViteConfigFile(): ?string
     {
         $possibleFiles = [
@@ -100,19 +69,4 @@ class ConfigWriter
         return null;
     }
 
-    private static function findUnoConfigFile(): ?string
-    {
-        $possibleFiles = [
-            getcwd() . '/uno.config.js',
-            getcwd() . '/uno.config.ts'
-        ];
-
-        foreach ($possibleFiles as $file) {
-            if (file_exists($file)) {
-                return $file;
-            }
-        }
-
-        return null;
-    }
 }
