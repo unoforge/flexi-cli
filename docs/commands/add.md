@@ -25,6 +25,7 @@ flexi-cli add <components...> [--namespace <ns>] [--skip-deps]
 - Installs registry dependencies recursively
 - Installs Composer and Node dependencies (asks for confirmation). If declined, shows commands to run later
 - Creates files listed by the registry item, skipping existing files
+- Collects each component `message` (if provided by registries) and prints them once at the end in a single note block
 
 ## Examples
 

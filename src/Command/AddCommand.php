@@ -24,6 +24,7 @@ class AddCommand extends Command
     private array $installedRegistryComponents = [];
     private array $pendingCommands = [];
     private array $createdFiles = [];
+    private array $postInstallMessages = [];
     private ?OutputInterface $output = null;
     private bool $skipPackageInstallation = false;
 
@@ -63,11 +64,15 @@ class AddCommand extends Command
             $this->addComponent($component, $namespace, $skipDeps);
         }
 
-        $output->writeln('<fg=green>====== Everything installed ======</>');
-        foreach ($this->createdFiles as $fileCreated) {
-            $output->writeln("<fg=green>✓ Created : $fileCreated</>");
+        if (!empty($this->createdFiles)) {
+            $output->writeln('<fg=green>====== Everything installed ======</>');
+            foreach ($this->createdFiles as $fileCreated) {
+                $output->writeln("<fg=green>✓ Created : $fileCreated</>");
+            }
+
+            $this->renderPostInstallMessages();
+            $output->writeln('<fg=green>====== Operation completed ======</>');
         }
-        $output->writeln('<fg=green>====== Operation completed ======</>');
 
         return Command::SUCCESS;
     }
@@ -139,6 +144,11 @@ class AddCommand extends Command
 
         // Mark this component as installed
         $this->installedRegistryComponents[] = $component;
+
+        if (isset($registryJson['message'])) {
+            $this->collectPostInstallMessage($registryJson['message']);
+        }
+
         $nameSpace = str_starts_with($component, '@')
             ? explode('/', $component)[0]
             : ($namespace ? $namespace : 'flexiwind');
@@ -453,6 +463,39 @@ class AddCommand extends Command
             foreach ($this->pendingCommands as $command) {
                 $this->output->writeln("  {$command}");
             }
+        }
+    }
+
+    private function collectPostInstallMessage(mixed $message): void
+    {
+        if (is_string($message)) {
+            $trimmed = trim($message);
+            if ($trimmed !== '') {
+                $this->postInstallMessages[] = $trimmed;
+            }
+            return;
+        }
+
+        if (is_array($message)) {
+            foreach ($message as $entry) {
+                $this->collectPostInstallMessage($entry);
+            }
+        }
+    }
+
+    private function renderPostInstallMessages(): void
+    {
+        $messages = array_values(array_unique($this->postInstallMessages));
+
+        if (empty($messages)) {
+            return;
+        }
+
+        $this->output->writeln('');
+        $this->output->writeln('<fg=yellow>Note----</>');
+        $this->output->writeln('<fg=yellow>Remember to do this :</>');
+        foreach ($messages as $message) {
+            $this->output->writeln("<fg=yellow>- {$message}</>");
         }
     }
 }
