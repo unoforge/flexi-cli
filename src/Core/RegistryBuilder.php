@@ -36,6 +36,14 @@ class RegistryBuilder
                 'description' => $component['description'] ?? '',
             ];
 
+            if (isset($component['message'])) {
+                if (!is_string($component['message'])) {
+                    warning("⚠️ `message` must be a string for component `{$component['name']}`.");
+                } else {
+                    $registry['message'] = $component['message'];
+                }
+            }
+
             spin(message: "Building files", callback: function () use ($component, &$files, $baseDir) {
                 foreach ($component['files'] as $fileItem) {
                     $filePath = $fileItem['path'];

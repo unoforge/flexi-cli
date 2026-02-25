@@ -54,6 +54,11 @@
       "description": "Brief description of the component",
       "maxLength": 500
     },
+    "message": {
+      "type": "string",
+      "description": "Post-install note displayed after all components are added",
+      "maxLength": 2000
+    },
     "registryDependencies": {
       "type": "array",
       "description": "List of other registry components this component depends on",
