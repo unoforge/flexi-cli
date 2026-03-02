@@ -10,23 +10,21 @@ if (file_exists(__DIR__.'/../vendor/autoload.php')) {
     exit(1);
 }
 
-
-use FlexiCli\Command\BuildCommand;
-use FlexiCli\Command\ValidateCommand;
 use FlexiCli\Command\AddCommand;
-use Symfony\Component\Console\Application;
-use FlexiCli\Command\InitCommand;
+use FlexiCli\Command\BuildCommand;
 use FlexiCli\Command\CleanFluxCommand;
 use FlexiCli\Command\FixIcons;
+use FlexiCli\Command\InitCommand;
+use FlexiCli\Command\ValidateCommand;
+use Symfony\Component\Console\Application;
 
-$application = new Application('Flexi-CLI', '0.0.2');
+$application = new Application('Flexi-CLI', '1.0.0');
 
-// Register commands
-$application->add(new InitCommand());
-$application->add(new AddCommand());
-$application->add(new BuildCommand());
-$application->add(new ValidateCommand());
-$application->add(new CleanFluxCommand());
-$application->add(new FixIcons());
+$application->addCommand(new InitCommand());
+$application->addCommand(new AddCommand());
+$application->addCommand(new BuildCommand());
+$application->addCommand(new ValidateCommand());
+$application->addCommand(new CleanFluxCommand());
+$application->addCommand(new FixIcons());
 
 $application->run();

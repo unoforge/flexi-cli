@@ -2,10 +2,10 @@
 
 namespace FlexiCli\Command;
 
-use FlexiCli\Core\{Constants, RegistryStore};
-use FlexiCli\Utils\HttpUtils;
-use FlexiCli\Service\ProjectDetector;
-use FlexiCli\Installer\PackageInstaller;
+use FlexiCore\Core\{Constants, RegistryStore};
+use FlexiCore\Utils\HttpUtils;
+use FlexiCore\Service\ProjectDetector;
+use FlexiCore\Installer\PackageInstaller;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -152,7 +152,12 @@ class AddCommand extends Command
         $nameSpace = str_starts_with($component, '@')
             ? explode('/', $component)[0]
             : ($namespace ? $namespace : 'flexiwind');
-        $this->store->add($component, $nameSpace, $registryJson['version']);
+        $this->store->add(
+            $component,
+            $nameSpace,
+            $registryJson['version'],
+            $registryJson['message'] ?? null
+        );
         $this->output->writeln("<fg=green>✔ {$component} added successfully</>");
     }
 
