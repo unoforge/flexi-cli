@@ -2,7 +2,8 @@
 
 namespace FlexiCli\Service;
 
-use FlexiCli\Service\ProjectDetector;
+use FlexiCore\Service\ProjectDetector;
+use FlexiCore\Service\ProjectCreator;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -17,10 +18,10 @@ class ProjectInitializer
 
 
         if ($input->getOption('new-laravel')) {
-            $projectAnswers = (new ProjectCreator())->createLaravel($output);
+            $projectAnswers = (new ProjectCreator())->createLaravel();
             $initProjectFromCli = true;
         } elseif ($input->getOption('new-symfony')) {
-            $projectAnswers = (new ProjectCreator())->createSymfony($output);
+            $projectAnswers = (new ProjectCreator())->createSymfony();
             $initProjectFromCli = true;
         }
 
@@ -35,9 +36,9 @@ class ProjectInitializer
                     default: 'laravel',
                 );
                 $projectAnswers = match ($framework) {
-                    'laravel' => (new ProjectCreator())->createLaravel($output),
-                    'symfony' => (new ProjectCreator())->createSymfony($output),
-                    default   => (new ProjectCreator())->createLaravel($output),
+                    'laravel' => (new ProjectCreator())->createLaravel(),
+                    'symfony' => (new ProjectCreator())->createSymfony(),
+                    default   => (new ProjectCreator())->createLaravel(),
                 };
 
 
