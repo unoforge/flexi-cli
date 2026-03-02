@@ -3,9 +3,10 @@
 namespace FlexiCli\Command;
 
 
-use FlexiCli\Service\{ProjectCreator, ProjectInitializer, ThemingInitializer, ProjectDetector};
-use FlexiCli\Libs\FlexiwindInitializer;
-use FlexiCli\Core\Constants;
+use FlexiCore\Service\{ThemingInitializer, ProjectDetector};
+use FlexiCore\Libs\FlexiwindInitializer;
+use FlexiCore\Core\Constants;
+use FlexiCli\Service\ProjectInitializer;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -19,7 +20,6 @@ class InitCommand extends Command
     private ?OutputInterface $output = null;
 
     public function __construct(
-        private ProjectCreator $projectCreator = new ProjectCreator(),
         private ThemingInitializer $themingInitializer = new ThemingInitializer(),
         private FlexiwindInitializer $flexiwindInitializer = new FlexiwindInitializer(),
     ) {
@@ -74,19 +74,27 @@ class InitCommand extends Command
 
 
         $projectType     = ProjectDetector::detect();
-        $packageManager  = ProjectDetector::getNodePackageManager();
+        $packageManager  = ProjectDetector::getNodePackageManager() ?? 'npm';
         $themingAnswers  = $this->themingInitializer->askTheming($isFlexiwind);
 
-        if ($isFlexiwind == 'flexiwind') {
-            $this->flexiwindInitializer->initialize(
+        if ($isFlexiwind) {
+            $summary = $this->flexiwindInitializer->initialize(
                 $projectType,
                 $packageManager,
                 $projectAnswers,
                 $themingAnswers,
                 $projectPath,
-                $input,
-                $output
+                [
+                    'jsPath' => $input->getOption('js-path'),
+                    'cssPath' => $input->getOption('css-path'),
+                ]
             );
+            $output->writeln('===================================');
+            foreach ($summary as $line) {
+                $output->writeln($line);
+            }
+            $output->writeln('===================================');
+            $output->writeln('<fg=green>✓ Flexiwind Setup Completed</>');
         } else {
             info('Initialization without Flexiwind is not yet implemented.');
         }

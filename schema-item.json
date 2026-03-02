@@ -55,9 +55,21 @@
       "maxLength": 500
     },
     "message": {
-      "type": "string",
-      "description": "Post-install note displayed after all components are added",
-      "maxLength": 2000
+      "description": "Post-install note(s) displayed after all components are added",
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 2000
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 2000
+          },
+          "minItems": 1
+        }
+      ]
     },
     "registryDependencies": {
       "type": "array",

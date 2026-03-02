@@ -1,22 +1,30 @@
 {
     "name": "unoforge/flexi-cli",
-    "description": "A modern CLI tool for rapidly scaffolding PHP web applications",
-    "version": "1.0.0",
+    "description": "CLI wrapper for the full Flexi PHP workflows",
+    "version": "1.1.0",
     "type": "cli",
     "require": {
+        "unoforge/flexi-core": "*",
         "symfony/console": "^7.3 || ^8.0",
         "symfony/yaml": "^7.3 || ^8.0",
-        "symfony/http-client": "^7.3 || ^8.0",
-        "laravel/prompts": "^0.3.10",
-        "symfony/process": "^7.3 || ^8.0"
+        "laravel/prompts": "^0.3.10"
     },
+    "repositories": [
+        {
+            "type": "path",
+            "url": "../core",
+            "options": {
+                "symlink": true
+            }
+        }
+    ],
     "license": "MIT",
     "autoload": {
         "psr-4": {
             "FlexiCli\\": "src/"
         }
     },
-     "bin": ["bin/flexi-cli"],
+    "bin": ["bin/flexi-cli"],
     "authors": [
         {
             "name": "Johnkat Mj",
