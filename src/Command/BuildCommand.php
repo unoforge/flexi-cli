@@ -14,7 +14,7 @@ class BuildCommand extends Command
 {
     protected static $defaultName = 'build';
 
-    protected function configure()
+    protected function configure(): void
     {
         $this->setName('build')
             ->setDescription('Build registries from schema file')
