@@ -22,6 +22,5 @@ flexi-cli --help
 - [add](./commands/add.md)
 - [build](./commands/build.md)
 - [validate](./commands/validate.md)
-- [clean:flux](./commands/clean-flux.md)
 
 

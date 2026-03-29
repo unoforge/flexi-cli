@@ -87,6 +87,8 @@ class FixIcons extends Command
             $mappingKey = 'lucide';
         } elseif ($iconLibraryLower === 'hugeicons') {
             $mappingKey = 'hugeicons';
+        } elseif ($iconLibraryLower === 'solar') {
+            $mappingKey = 'solar';
         }
 
         if (!$mappingKey) {

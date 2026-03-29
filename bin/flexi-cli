@@ -32,7 +32,6 @@ if (!class_exists(\FlexiCore\Core\Constants::class)) {
 
 use FlexiCli\Command\AddCommand;
 use FlexiCli\Command\BuildCommand;
-use FlexiCli\Command\CleanFluxCommand;
 use FlexiCli\Command\FixIcons;
 use FlexiCli\Command\InitCommand;
 use FlexiCli\Command\ValidateCommand;
@@ -44,7 +43,6 @@ $application->addCommand(new InitCommand());
 $application->addCommand(new AddCommand());
 $application->addCommand(new BuildCommand());
 $application->addCommand(new ValidateCommand());
-$application->addCommand(new CleanFluxCommand());
 $application->addCommand(new FixIcons());
 
 $application->run();
