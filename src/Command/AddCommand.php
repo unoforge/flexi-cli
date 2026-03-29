@@ -28,6 +28,7 @@ class AddCommand extends Command
     private array $resolvedRegistries = [];
     private ?OutputInterface $output = null;
     private bool $skipPackageInstallation = false;
+    private array $pendingDependencies = [];
     private bool $dryRun = false;
     private bool $forceRewrite = false;
     private bool $forceNoRewrite = false;
@@ -78,6 +79,10 @@ class AddCommand extends Command
 
         foreach ($components as $componentInput) {
             $this->addComponent((string) $componentInput, is_string($namespace) ? $namespace : null, $skipDeps);
+        }
+
+        if (!$skipDeps) {
+            $this->flushPendingDependencies();
         }
 
         if ($this->dryRun) {
@@ -252,6 +257,8 @@ class AddCommand extends Command
 
     private function handleRegistryDependencies(array $registryDependencies, ?string $namespace): void
     {
+        $this->output?->writeln('<fg=blue>🔍 Found registry dependencies, checking...</>');
+
         foreach ($registryDependencies as $dependency) {
             try {
                 $dependencyRef = RegistryComponentReference::parse((string) $dependency);
@@ -260,19 +267,33 @@ class AddCommand extends Command
                 continue;
             }
 
-            if (in_array($dependencyRef->component, $this->installedRegistryComponents, true)) {
+            $this->output?->writeln("<fg=blue>  → Checking: {$dependencyRef->toDisplay()}</>");
+
+            if (\in_array($dependencyRef->component, $this->installedRegistryComponents, true)) {
+                $this->output?->writeln("<fg=green>  ✔ {$dependencyRef->component} already processed in this session, skipping.</>");
                 continue;
             }
 
             $depNamespace = $dependencyRef->namespace ?? $namespace ?? 'flexiwind';
-            if ($this->store->exists($dependencyRef->component, $depNamespace) && $dependencyRef->version === null) {
-                $this->output?->writeln("<fg=yellow>Registry dependency already installed: {$dependencyRef->component}</>");
-                continue;
-            }
+            $alreadyInStore = $this->store->exists($dependencyRef->component, $depNamespace) && $dependencyRef->version === null;
 
-            $this->output?->writeln("<fg=yellow>Installing registry dependency: {$dependencyRef->toDisplay()}</>");
-            if ($this->skipPackageInstallation) {
-                $this->showPendingCommands();
+            if ($alreadyInStore) {
+                $this->output?->writeln("<fg=yellow>  ⚠ Registry dependency already present: {$dependencyRef->component}</>");
+
+                if ($this->forceRewrite) {
+                    $this->output?->writeln("<fg=yellow>  ↺ --rewrite flag set, reinstalling {$dependencyRef->component}...</>");
+                } elseif ($this->forceNoRewrite || $this->dryRun) {
+                    $this->output?->writeln("<fg=yellow>  Skipping {$dependencyRef->component}.</>");
+                    continue;
+                } else {
+                    $overwrite = confirm("  Registry dependency \"{$dependencyRef->component}\" is already installed. Overwrite it?", false);
+                    if (!$overwrite) {
+                        $this->output?->writeln("<fg=yellow>  Skipping {$dependencyRef->component}.</>");
+                        continue;
+                    }
+                }
+            } else {
+                $this->output?->writeln("<fg=yellow>  ↓ Registry dependency not found locally, installing: {$dependencyRef->toDisplay()}</>");
             }
 
             $this->addComponent($dependencyRef->toDisplay(), $namespace, false);
@@ -291,45 +312,68 @@ class AddCommand extends Command
             return;
         }
 
-        if (count($composerDeps) > 0) {
-            $this->output?->writeln('<fg=yellow>Composer requires dependencies:</>');
-            foreach ($composerDeps as $dep) {
-                $this->output?->writeln("<fg=yellow>     → {$dep}</>");
-            }
-        }
-        if (count($nodeDeps) > 0) {
-            $this->output?->writeln('<fg=yellow>Node dependencies:</>');
-            foreach ($nodeDeps as $dep) {
-                $this->output?->writeln("<fg=yellow>     → {$dep}</>");
-            }
-        }
-
         if ($this->dryRun) {
             $this->savePendingCommands($dependencies, $devDependencies);
             return;
         }
 
-        if (!confirm('Install dependencies now?', true)) {
-            $this->output?->writeln('<fg=red>Skipping dependency installation. You may need to install them manually.</>');
-            $this->skipPackageInstallation = true;
-            $this->savePendingCommands($dependencies, $devDependencies);
+        // Accumulate deps to be installed later in a single prompt
+        foreach ($dependencies['composer'] ?? [] as $dep) {
+            $this->pendingDependencies['composer']['prod'][] = $dep;
+        }
+        foreach ($devDependencies['composer'] ?? [] as $dep) {
+            $this->pendingDependencies['composer']['dev'][] = $dep;
+        }
+        foreach ($dependencies['node'] ?? [] as $dep) {
+            $this->pendingDependencies['node']['prod'][] = $dep;
+        }
+        foreach ($devDependencies['node'] ?? [] as $dep) {
+            $this->pendingDependencies['node']['dev'][] = $dep;
+        }
+    }
+
+    private function flushPendingDependencies(): void
+    {
+        if (empty($this->pendingDependencies)) {
             return;
         }
 
-        if (ProjectDetector::check_Composer($this->projectRoot) && !empty($composerDeps)) {
-            $this->installComposerDependencies(
-                $dependencies['composer'] ?? [],
-                $devDependencies['composer'] ?? []
+        $composerDeps = array_unique($this->pendingDependencies['composer']['prod'] ?? []);
+        $composerDevDeps = array_unique($this->pendingDependencies['composer']['dev'] ?? []);
+        $nodeDeps = array_unique($this->pendingDependencies['node']['prod'] ?? []);
+        $nodeDevDeps = array_unique($this->pendingDependencies['node']['dev'] ?? []);
+
+        if (count($composerDeps) + count($composerDevDeps) > 0) {
+            $this->output?->writeln('<fg=yellow>Composer dependencies required:</>');
+            foreach (array_merge($composerDeps, $composerDevDeps) as $dep) {
+                $this->output?->writeln("<fg=yellow>     → {$dep}</>");
+            }
+        }
+        if (count($nodeDeps) + count($nodeDevDeps) > 0) {
+            $this->output?->writeln('<fg=yellow>Node dependencies required:</>');
+            foreach (array_merge($nodeDeps, $nodeDevDeps) as $dep) {
+                $this->output?->writeln("<fg=yellow>     → {$dep}</>");
+            }
+        }
+
+        if (!confirm('Install all dependencies now?', true)) {
+            $this->output?->writeln('<fg=red>Skipping dependency installation. You may need to install them manually.</>');
+            $this->skipPackageInstallation = true;
+            $this->savePendingCommands(
+                ['composer' => $composerDeps, 'node' => $nodeDeps],
+                ['composer' => $composerDevDeps, 'node' => $nodeDevDeps]
             );
+            $this->showPendingCommands();
+            return;
+        }
+
+        if (ProjectDetector::check_Composer($this->projectRoot) && (!empty($composerDeps) || !empty($composerDevDeps))) {
+            $this->installComposerDependencies(array_values($composerDeps), array_values($composerDevDeps));
         }
 
         $packageManager = ProjectDetector::getNodePackageManager();
-        if ($packageManager && file_exists($this->projectRoot . '/package.json') && !empty($nodeDeps)) {
-            $this->installNodeDependencies(
-                $dependencies['node'] ?? [],
-                $devDependencies['node'] ?? [],
-                $packageManager
-            );
+        if ($packageManager && file_exists($this->projectRoot . '/package.json') && (!empty($nodeDeps) || !empty($nodeDevDeps))) {
+            $this->installNodeDependencies(array_values($nodeDeps), array_values($nodeDevDeps), $packageManager);
         }
     }
 
@@ -591,11 +635,7 @@ class AddCommand extends Command
         }
 
         $this->output?->writeln('');
-        $this->output?->writeln('<fg=yellow>Note----</>');
-        $this->output?->writeln('<fg=yellow>Remember to do this :</>');
-        foreach ($messages as $message) {
-            $this->output?->writeln("<fg=yellow>- {$message}</>");
-        }
+        $this->output?->writeln('<fg=yellow>Good to know: components.json contains guides to help you consuming the installed registries.</>');
     }
 
     private function renderDryRunSummary(): void
