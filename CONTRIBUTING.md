@@ -78,7 +78,6 @@ While there is not yet a formal test suite, please:
   php bin/flexi-cli add --help
   php bin/flexi-cli build --help
   php bin/flexi-cli validate --help
-  php bin/flexi-cli clean:flux --help
   ```
 - For file‑writing operations, test inside a temporary sample project directory and verify generated files.
 - For network/registry features, prefer using local/test endpoints when possible.

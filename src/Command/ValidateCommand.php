@@ -15,7 +15,7 @@ class ValidateCommand extends Command
 {
     protected static $defaultName = 'validate';
 
-    protected function configure()
+    protected function configure(): void
     {
         $this->setName('validate')
             ->setDescription('Validate registry items against the schema')
