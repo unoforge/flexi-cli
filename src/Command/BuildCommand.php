@@ -31,6 +31,18 @@ class BuildCommand extends Command
                 InputOption::VALUE_OPTIONAL,
                 'The schema file to build from',
                 'registry.json'
+            )
+            ->addOption(
+                'override',
+                null,
+                InputOption::VALUE_NONE,
+                'Force override components even if version is unchanged'
+            )
+            ->addOption(
+                'no-override',
+                null,
+                InputOption::VALUE_NONE,
+                'Never override components if version is unchanged'
             );
     }
 
@@ -42,12 +54,20 @@ class BuildCommand extends Command
         $cleanOutputDir = trim($outputDir, '/\\');
         $fullOutputPath = getcwd() . DIRECTORY_SEPARATOR . $cleanOutputDir;
 
+        // Determine override mode
+        $overrideMode = 'auto';
+        if ($input->getOption('override')) {
+            $overrideMode = 'force';
+        } elseif ($input->getOption('no-override')) {
+            $overrideMode = 'never';
+        }
+
         try {
             if (!file_exists($schemaPath)) {
                 error("Schema file not found: {$schemaPath}");
                 return Command::FAILURE;
             }
-            $builder->build($schemaPath, $fullOutputPath);
+            $builder->build($schemaPath, $fullOutputPath, $overrideMode);
             info("Registries built successfully in: {$cleanOutputDir}");
         } catch (\Exception $e) {
             error($e->getMessage());
