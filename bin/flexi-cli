@@ -34,6 +34,9 @@ use FlexiCli\Command\AddCommand;
 use FlexiCli\Command\BuildCommand;
 use FlexiCli\Command\FixIcons;
 use FlexiCli\Command\InitCommand;
+use FlexiCli\Command\ListCommand;
+use FlexiCli\Command\PreviewCommand;
+use FlexiCli\Command\SearchCommand;
 use FlexiCli\Command\ValidateCommand;
 use Symfony\Component\Console\Application;
 
@@ -41,6 +44,9 @@ $application = new Application('Flexi-CLI', '1.0.0');
 
 $application->addCommand(new InitCommand());
 $application->addCommand(new AddCommand());
+$application->addCommand(new ListCommand());
+$application->addCommand(new SearchCommand());
+$application->addCommand(new PreviewCommand());
 $application->addCommand(new BuildCommand());
 $application->addCommand(new ValidateCommand());
 $application->addCommand(new FixIcons());
