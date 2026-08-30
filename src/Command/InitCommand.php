@@ -62,11 +62,6 @@ class InitCommand extends Command
             return Command::FAILURE;
         }
 
-        if (!empty($projectAnswers['fromStarter'])) {
-            info('Starter projects are not yet implemented.');
-            return Command::SUCCESS;
-        }
-
         $projectPath = $initProjectFromCli
             ? $projectAnswers['projectPath'] ?? getcwd() . '/' . ($projectAnswers['name'] ?? 'my-app')
             : getcwd();

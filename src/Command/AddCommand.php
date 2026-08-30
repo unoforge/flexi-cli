@@ -2,9 +2,9 @@
 
 namespace FlexiCli\Command;
 
-use FlexiCore\Core\{Constants, RegistryComponentReference, RegistryStore, RegistryVersionResolver};
+use FlexiCore\Core\{Constants, GitHubComponentReference, RegistryComponentReference, RegistryStore, RegistryVersionResolver};
 use FlexiCore\Installer\PackageInstaller;
-use FlexiCore\Service\ProjectDetector;
+use FlexiCore\Service\{ProjectDetector, CssVariableMergeService, GitHubRegistryResolver};
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -32,6 +32,7 @@ class AddCommand extends Command
     private bool $dryRun = false;
     private bool $forceRewrite = false;
     private bool $forceNoRewrite = false;
+    private array $cssModifications = [];
 
     public function __construct(
         private RegistryStore $store = new RegistryStore(),
@@ -90,7 +91,7 @@ class AddCommand extends Command
             return Command::SUCCESS;
         }
 
-        if (!empty($this->createdFiles) || !empty($this->overwrittenFiles)) {
+        if (!empty($this->createdFiles) || !empty($this->overwrittenFiles) || !empty($this->cssModifications)) {
             $output->writeln('<fg=green>====== Everything installed ======</>');
             foreach ($this->createdFiles as $fileCreated) {
                 $output->writeln("<fg=green>✓ Created : {$fileCreated}</>");
@@ -128,6 +129,12 @@ class AddCommand extends Command
 
     private function addComponent(string $componentInput, ?string $namespace, bool $skipDeps = false): void
     {
+        // Check if it's a GitHub reference
+        if (GitHubComponentReference::isGitHubReference($componentInput)) {
+            $this->addComponentFromGitHub($componentInput, $namespace, $skipDeps);
+            return;
+        }
+
         try {
             $reference = RegistryComponentReference::parse($componentInput);
         } catch (\InvalidArgumentException $e) {
@@ -152,8 +159,11 @@ class AddCommand extends Command
             'url' => $resolved['url'] ?? '',
         ];
 
-        if (!isset($registryJson['files']) || !is_array($registryJson['files'])) {
-            $this->output?->writeln("<fg=red>⚠️ Invalid registry: no files for {$reference->component}</>");
+        $hasFiles = isset($registryJson['files']) && is_array($registryJson['files']) && !empty($registryJson['files']);
+        $hasCss = !empty($registryJson['cssVars']) || !empty($registryJson['css']);
+
+        if (!$hasFiles && !$hasCss) {
+            $this->output?->writeln("<fg=red>⚠️ Invalid registry: no files or CSS for {$reference->component}</>");
             return;
         }
 
@@ -183,16 +193,19 @@ class AddCommand extends Command
             $this->handlePackageDependencies($registryJson);
         }
 
-        if ($this->dryRun) {
-            foreach ($registryJson['files'] as $file) {
-                $this->processFile($file, $rewrite);
-            }
-        } else {
-            spin(message: 'Processing files...', callback: function () use ($registryJson, $rewrite): void {
-                foreach ($registryJson['files'] as $file) {
+        $files = $registryJson['files'] ?? [];
+        if (!empty($files)) {
+            if ($this->dryRun) {
+                foreach ($files as $file) {
                     $this->processFile($file, $rewrite);
                 }
-            });
+            } else {
+                spin(message: 'Processing files...', callback: function () use ($files, $rewrite): void {
+                    foreach ($files as $file) {
+                        $this->processFile($file, $rewrite);
+                    }
+                });
+            }
         }
 
         $this->installedRegistryComponents[] = $reference->component;
@@ -208,6 +221,9 @@ class AddCommand extends Command
                 is_string($resolvedVersion) ? $resolvedVersion : Constants::DEFAULT_COMPONENT_VERSION,
                 $registryJson['message'] ?? null
             );
+
+            $this->applyCssVariables($registryJson, $reference->component);
+
             $this->output?->writeln("<fg=green>✔ {$reference->component} added successfully</>");
             return;
         }
@@ -666,5 +682,132 @@ class AddCommand extends Command
         }
 
         $this->output?->writeln('<fg=cyan>================================</>');
+    }
+
+    private function applyCssVariables(array $registryJson, string $componentName): void
+    {
+        if (empty($registryJson['cssVars']) && empty($registryJson['css'])) {
+            return;
+        }
+
+        try {
+            $config = Yaml::parseFile($this->projectRoot . '/flexiwind.yaml');
+            $cssPath = $config['cssPath'] ?? 'resources/css';
+
+            $service = new CssVariableMergeService($this->projectRoot, ['path' => $cssPath]);
+            $summary = $service->applyComponentStyles($registryJson, 'app');
+
+            if (isset($summary['error'])) {
+                $this->output?->writeln("<fg=yellow>⚠️  CSS merge warning for {$componentName}: {$summary['error']}</>");
+                return;
+            }
+
+            if ($summary['success'] ?? false) {
+                $varsCount = $summary['varsCount'] ?? 0;
+                $rulesCount = $summary['rulesCount'] ?? 0;
+                if ($varsCount > 0 || $rulesCount > 0) {
+                    $this->output?->writeln("<fg=blue>  ✓ CSS variables updated: {$varsCount} vars, {$rulesCount} rules</>");
+                    $this->cssModifications[] = [
+                        'component' => $componentName,
+                        'varsCount' => $varsCount,
+                        'rulesCount' => $rulesCount,
+                    ];
+                }
+            }
+        } catch (\Exception $e) {
+            $this->output?->writeln("<fg=yellow>⚠️  Could not apply CSS variables for {$componentName}: {$e->getMessage()}</>");
+        }
+    }
+
+    private function addComponentFromGitHub(string $componentInput, ?string $namespace, bool $skipDeps = false): void
+    {
+        $ghRef = GitHubComponentReference::parse($componentInput);
+
+        if ($ghRef === null) {
+            $this->output?->writeln('<fg=red>Invalid GitHub reference format. Use: github:owner/repo/component or owner/repo/component</>');
+            return;
+        }
+
+        $this->output?->writeln('<fg=cyan>Fetching from GitHub: ' . $ghRef->toDisplayWithPrefix() . '</>');
+
+        $resolver = new GitHubRegistryResolver();
+        $resolved = $resolver->resolve($ghRef);
+
+        if (!$resolved) {
+            $this->output?->writeln("<fg=red>Component not found: {$ghRef->toDisplay()}</>");
+            return;
+        }
+
+        $registryJson = $resolved['registry'];
+        $resolvedVersion = $resolved['resolvedVersion'] ?? Constants::DEFAULT_COMPONENT_VERSION;
+
+        $this->resolvedRegistries[] = [
+            'component' => $ghRef->component,
+            'requested' => $ghRef->branch,
+            'resolved' => $resolvedVersion,
+            'url' => $ghRef->getBrowserUrl(),
+        ];
+
+        $hasFiles = isset($registryJson['files']) && is_array($registryJson['files']) && !empty($registryJson['files']);
+        $hasCss = !empty($registryJson['cssVars']) || !empty($registryJson['css']);
+
+        if (!$hasFiles && !$hasCss) {
+            $this->output?->writeln("<fg=red>Invalid registry: no files or CSS for {$ghRef->component}</>");
+            return;
+        }
+
+        $storeName = $ghRef->component;
+        $storeNamespace = 'github:' . $ghRef->owner . '/' . $ghRef->repo;
+        $isInstalled = $this->store->exists($storeName, $storeNamespace);
+        $installedVersion = $this->store->getVersion($storeName, $storeNamespace);
+
+        $rewrite = $this->resolveRewriteDecision(
+            null,
+            $isInstalled,
+            $installedVersion,
+            $resolvedVersion
+        );
+
+        if ($isInstalled && !$rewrite) {
+            $this->output?->writeln("<fg=yellow>Skipping {$ghRef->component}. Use --rewrite to reinstall.</>");
+            return;
+        }
+
+        $this->output?->writeln('<fg=blue>Adding component: ' . $ghRef->toDisplay() . '</>');
+
+        if (!$skipDeps) {
+            $this->handlePackageDependencies($registryJson);
+        }
+
+        $files = $registryJson['files'] ?? [];
+        if (!empty($files)) {
+            if ($this->dryRun) {
+                foreach ($files as $file) {
+                    $this->processFile($file, $rewrite);
+                }
+            } else {
+                spin(message: 'Processing files...', callback: function () use ($files, $rewrite): void {
+                    foreach ($files as $file) {
+                        $this->processFile($file, $rewrite);
+                    }
+                });
+            }
+        }
+
+        if (!$this->dryRun) {
+            $this->store->add(
+                $storeName,
+                $storeNamespace,
+                $resolvedVersion,
+                $registryJson['message'] ?? null
+            );
+
+            $this->applyCssVariables($registryJson, $ghRef->component);
+
+            $this->output?->writeln("<fg=green>✔ {$ghRef->component} added successfully</>");
+            return;
+        }
+
+        $this->output?->writeln("<fg=yellow>[dry] Planned install for {$ghRef->toDisplay()}</>");
     }
 }
