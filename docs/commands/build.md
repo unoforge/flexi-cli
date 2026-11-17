@@ -19,6 +19,8 @@ flexi-cli build [--output|-o <dir>] [--override|--no-override]
 
 Invokes the registry builder to produce a `registry-item-name.json` file (or files) in the specified output folder.
 
+Also writes an identifiable **source index** at `<output>/index.json` (`type: registry:source`) listing every registry available in that source. The CLI uses this file for `list` and for installing everything from a source (`add --all` / `@namespace/*`).
+
 ## Examples
 
 ```bash

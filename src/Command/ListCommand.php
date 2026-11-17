@@ -64,7 +64,7 @@ class ListCommand extends Command
 
         $filters = [];
         if ($input->getOption('type')) {
-            $filters['type'] = $input->getOption('type');
+            $filters['type'] = $this->normalizeTypeFilter((string) $input->getOption('type'));
         }
         if ($input->getOption('search')) {
             $filters['search'] = $input->getOption('search');
@@ -82,7 +82,8 @@ class ListCommand extends Command
             $registry,
             $filters,
             $source['headers'] ?? [],
-            $source['params'] ?? []
+            $source['params'] ?? [],
+            $source['baseUrl'] ?? null
         );
 
         if (!$result['success']) {
@@ -199,6 +200,19 @@ class ListCommand extends Command
         $output->writeln('<fg=yellow>Total: ' . $stats['total'] . ' component(s)</>');
 
         return Command::SUCCESS;
+    }
+
+    private function normalizeTypeFilter(string $type): string
+    {
+        $value = trim($type);
+
+        return match (strtolower($value)) {
+            'style', 'styles', 'theme', 'themes' => 'registry:style',
+            'ui' => 'registry:ui',
+            'block', 'blocks' => 'registry:block',
+            'component', 'components' => 'registry:component',
+            default => str_starts_with($value, 'registry:') ? $value : 'registry:' . $value,
+        };
     }
 
     private function loadConfiguration(): void
