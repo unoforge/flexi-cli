@@ -1,0 +1,77 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://flexiwind.com/schema/registry-source.json",
+  "title": "Flexiwind Registry Source Index Schema",
+  "description": "Catalog of all registry items available in a given source. Built next to registry item JSON files so the CLI can list and install everything from that source.",
+  "type": "object",
+  "required": [
+    "type",
+    "items"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "Reference to this schema file"
+    },
+    "name": {
+      "type": "string",
+      "description": "Source identifier",
+      "minLength": 1,
+      "maxLength": 100
+    },
+    "type": {
+      "type": "string",
+      "description": "Must be registry:source so the CLI can identify this file",
+      "const": "registry:source"
+    },
+    "title": {
+      "type": "string",
+      "description": "Human-readable source title",
+      "maxLength": 200
+    },
+    "description": {
+      "type": "string",
+      "description": "Brief description of the source",
+      "maxLength": 500
+    },
+    "homepage": {
+      "type": "string",
+      "format": "uri"
+    },
+    "author": {
+      "type": "string"
+    },
+    "items": {
+      "type": "array",
+      "description": "Lightweight entries for every registry item published by this source",
+      "items": {
+        "type": "object",
+        "required": [
+          "name",
+          "type"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "pattern": "^[a-z0-9-]+$"
+          },
+          "type": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "version": {
+            "type": "string",
+            "pattern": "^\\d+\\.\\d+\\.\\d+(-[a-zA-Z0-9-]+)?$"
+          }
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "additionalProperties": true
+}

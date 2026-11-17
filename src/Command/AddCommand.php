@@ -4,7 +4,7 @@ namespace FlexiCli\Command;
 
 use FlexiCore\Core\{Constants, GitHubComponentReference, RegistryComponentReference, RegistryStore, RegistryVersionResolver};
 use FlexiCore\Installer\PackageInstaller;
-use FlexiCore\Service\{ProjectDetector, CssVariableMergeService, GitHubRegistryResolver};
+use FlexiCore\Service\{ComponentInputExpander, ProjectDetector, CssVariableMergeService, GitHubRegistryResolver};
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -36,7 +36,8 @@ class AddCommand extends Command
 
     public function __construct(
         private RegistryStore $store = new RegistryStore(),
-        private RegistryVersionResolver $versionResolver = new RegistryVersionResolver()
+        private RegistryVersionResolver $versionResolver = new RegistryVersionResolver(),
+        private ComponentInputExpander $inputExpander = new ComponentInputExpander()
     ) {
         parent::__construct();
         $this->projectRoot = getcwd();
@@ -48,8 +49,11 @@ class AddCommand extends Command
         $this
             ->setName('add')
             ->setDescription('Add UI components to your project from component registries')
-            ->addArgument('components', InputArgument::IS_ARRAY | InputArgument::REQUIRED, 'Component refs to add (e.g. button, button@0.0.2, @fly-ui/button@0.0.1)')
+            ->addArgument('components', InputArgument::IS_ARRAY | InputArgument::OPTIONAL, 'Component refs to add (e.g. button, mono, theme-mono, theme-*, @flexiwind/*)')
             ->addOption('namespace', null, InputOption::VALUE_REQUIRED, 'Namespace to use for all components')
+            ->addOption('all', null, InputOption::VALUE_NONE, 'Install every registry listed in the source index')
+            ->addOption('themes', null, InputOption::VALUE_NONE, 'Install every Playground theme (registry:style)')
+            ->addOption('type', null, InputOption::VALUE_REQUIRED, 'Filter --all / globs by type (style, registry:style, ui, block, …)')
             ->addOption('skip-deps', null, InputOption::VALUE_NONE, 'Skip dependency installation')
             ->addOption('rewrite', null, InputOption::VALUE_NONE, 'Rewrite existing files for already installed components')
             ->addOption('no-rewrite', null, InputOption::VALUE_NONE, 'Do not rewrite existing files for already installed components')
@@ -59,8 +63,11 @@ class AddCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->output = $output;
-        $components = $input->getArgument('components');
+        $components = $input->getArgument('components') ?? [];
         $namespace = $input->getOption('namespace');
+        $installAll = (bool) $input->getOption('all');
+        $installThemes = (bool) $input->getOption('themes');
+        $typeFilter = $input->getOption('type');
         $skipDeps = (bool) $input->getOption('skip-deps');
         $this->dryRun = (bool) $input->getOption('dry');
         $this->forceRewrite = (bool) $input->getOption('rewrite');
@@ -71,12 +78,40 @@ class AddCommand extends Command
             return Command::FAILURE;
         }
 
+        if ($installAll && $installThemes) {
+            $output->writeln('<fg=red>Cannot use --all and --themes together.</>');
+            return Command::FAILURE;
+        }
+
         if (!$this->configExists()) {
             $output->writeln('Flexiwind not initialized, Run init command first');
             return Command::FAILURE;
         }
 
         $this->store->init();
+
+        try {
+            $components = $this->inputExpander->expand(
+                array_map('strval', $components),
+                is_string($namespace) ? $namespace : null,
+                $installAll,
+                $installThemes,
+                is_string($typeFilter) ? $typeFilter : null,
+                $this->defaultSource,
+                $this->registries,
+                function (string $message) use ($output): void {
+                    $output->writeln('<fg=blue>' . $message . '</>');
+                }
+            );
+        } catch (\RuntimeException $e) {
+            $output->writeln('<fg=red>' . $e->getMessage() . '</>');
+            return Command::FAILURE;
+        }
+
+        if (empty($components)) {
+            $output->writeln('<fg=red>No components specified. Pass component names, theme-*, --themes, @namespace/*, or --all.</>');
+            return Command::FAILURE;
+        }
 
         foreach ($components as $componentInput) {
             $this->addComponent((string) $componentInput, is_string($namespace) ? $namespace : null, $skipDeps);
